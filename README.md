@@ -177,20 +177,33 @@ Example Admin Document:
 
 # 📸 Screenshots
 
-## Home Page
+## 🏠 Home Page
 
-Add screenshot here
-
-## Product Page
-
-Add screenshot here
-
-## Admin Dashboard
-
-Add screenshot here
+![Home Page](./novamart.jpeg)
 
 ---
 
+## 🛍️ Product Page
+
+![Product Page](./novamart3.jpeg)
+
+---
+
+## 🛒 Cart Page
+
+![Cart Page](./novamart4.jpeg)
+
+---
+
+## 👤 Sign In Page
+
+![Sign In](./signin.jpeg)
+
+---
+
+## ⚙️ Admin Dashboard
+
+![Admin Dashboard](./admin dashboard.jpeg)
 # 📦 API Endpoints
 
 ## Auth Routes
