@@ -1,36 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api";
 
-// Async thunk to fetch activities
+// Fetch activity logs
 export const fetchActivity = createAsyncThunk(
   "activity/fetchActivity",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        "/http://localhost:3000/activityLogs/activity"
-      ); // Replace with your API
-      // Ensure we return an array
-      if (!Array.isArray(response.data)) {
-        // If API wraps data in a property like { data: [...] }
-        return response.data.data ?? [];
-      }
-      return response.data;
+      const res = await api.get("/activityLogs/activity");
+
+      if (Array.isArray(res.data)) return res.data;
+      return res.data?.data ?? [];
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || err.message);
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch activity logs"
+      );
     }
   }
 );
 
-const initialState = {
-  activities: [],
-  loading: false,
-  error: null,
-};
-
 const activitySlice = createSlice({
   name: "activity",
-  initialState,
-  reducers: {},
+  initialState: {
+    activities: [],
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    clearActivity: (state) => {
+      state.activities = [];
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchActivity.pending, (state) => {
@@ -48,7 +48,8 @@ const activitySlice = createSlice({
   },
 });
 
-// Selector to get all activities safely
+// Selector
 export const selectAllActivity = (state) => state.activity.activities ?? [];
 
+export const { clearActivity } = activitySlice.actions;
 export default activitySlice.reducer;

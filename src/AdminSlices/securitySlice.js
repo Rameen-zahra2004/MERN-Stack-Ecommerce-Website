@@ -1,13 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api";
 
-const ADMIN_URL = "http://localhost:3000/admins";
+const API = "/admin/security";
 
 // Fetch admin info
-export const fetchAdmin = createAsyncThunk("security/fetchAdmin", async () => {
-  const res = await axios.get(ADMIN_URL);
-  return res.data;
-});
+export const fetchAdmin = createAsyncThunk(
+  "security/fetchAdmin",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get(API);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch admin");
+    }
+  }
+);
 
 // Change password
 export const changePassword = createAsyncThunk(
@@ -19,17 +26,25 @@ export const changePassword = createAsyncThunk(
       return rejectWithValue("Old password is incorrect!");
     }
 
-    const res = await axios.patch(ADMIN_URL, { password: newPassword });
-    return res.data;
+    try {
+      const res = await api.patch(API, { password: newPassword });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to change password");
+    }
   }
 );
 
 // Toggle 2FA
 export const toggle2FA = createAsyncThunk(
   "security/toggle2FA",
-  async (enabled) => {
-    const res = await axios.patch(ADMIN_URL, { twoFA: enabled });
-    return res.data;
+  async (enabled, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(API, { twoFA: enabled });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to toggle 2FA");
+    }
   }
 );
 
@@ -38,17 +53,26 @@ const securitySlice = createSlice({
   initialState: {
     loading: false,
     error: null,
+    success: false,
     username: "",
     password: "",
     twoFAEnabled: false,
   },
-  reducers: {},
+  reducers: {
+    clearSuccess: (state) => {
+      state.success = false;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch admin
       .addCase(fetchAdmin.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = false;
       })
       .addCase(fetchAdmin.fulfilled, (state, action) => {
         state.loading = false;
@@ -58,21 +82,23 @@ const securitySlice = createSlice({
       })
       .addCase(fetchAdmin.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
 
       // Change password
       .addCase(changePassword.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = false;
       })
       .addCase(changePassword.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = true;
         state.password = action.payload.password;
       })
       .addCase(changePassword.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || action.error.message;
+        state.error = action.payload;
       })
 
       // Toggle 2FA
@@ -82,13 +108,15 @@ const securitySlice = createSlice({
       })
       .addCase(toggle2FA.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = true;
         state.twoFAEnabled = action.payload.twoFA;
       })
       .addCase(toggle2FA.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });
 
+export const { clearSuccess, clearError } = securitySlice.actions;
 export default securitySlice.reducer;

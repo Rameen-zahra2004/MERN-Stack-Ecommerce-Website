@@ -1,97 +1,113 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../api";
 
-// ===================== FETCH USERS =====================
+/*
+==================================================
+FETCH USERS
+==================================================
+*/
 export const fetchUsers = createAsyncThunk(
-  "users/fetch",
+  "users/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:3000/users");
-      if (!res.ok) throw new Error("Failed to fetch users");
-      return await res.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await api.get("/users");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue("Failed to fetch users");
     }
   }
 );
 
-// ===================== ADD USER =====================
+/*
+==================================================
+ADD USER
+==================================================
+*/
 export const addUser = createAsyncThunk(
   "users/addUser",
   async (newUser, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:3000/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
-      });
-      if (!res.ok) throw new Error("Failed to add user");
-      return await res.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await api.post("/users", newUser);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue("Failed to add user");
     }
   }
 );
 
-// ===================== DELETE USER =====================
+/*
+==================================================
+DELETE USER
+==================================================
+*/
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await fetch(`http://localhost:3000/users/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Failed to delete user");
+      await api.delete(`/users/${id}`);
       return id;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (err) {
+      return rejectWithValue("Failed to delete user");
     }
   }
 );
 
-// ===================== UPDATE USER =====================
+/*
+==================================================
+UPDATE USER
+==================================================
+*/
 export const updateUser = createAsyncThunk(
   "users/updateUser",
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      const res = await fetch(`http://localhost:3000/users/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
-      if (!res.ok) throw new Error("Failed to update user");
-      return await res.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await api.patch(`/users/${id}`, updatedData);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue("Failed to update user");
     }
   }
 );
 
-// ===================== BLOCK / UNBLOCK USER =====================
+/*
+==================================================
+BLOCK / UNBLOCK USER  (FIX YOUR ERROR HERE)
+==================================================
+*/
 export const updateUserStatus = createAsyncThunk(
-  "users/updateStatus",
+  "users/updateUserStatus",
   async ({ id, status }, { rejectWithValue }) => {
     try {
-      const res = await fetch(`http://localhost:3000/users/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      if (!res.ok) throw new Error("Failed to update user status");
-      return await res.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await api.patch(`/users/${id}`, { status });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue("Failed to update user status");
     }
   }
 );
 
-// ===================== SLICE =====================
+/*
+==================================================
+SLICE
+==================================================
+*/
 const userSlice = createSlice({
-  name: "user",
-  initialState: { items: [], loading: false, error: null },
+  name: "users",
+
+  initialState: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+
   reducers: {},
+
   extraReducers: (builder) => {
     builder
-      // FETCH
+
+      /*
+      FETCH USERS
+      */
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -105,28 +121,47 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ADD
+      /*
+      ADD USER
+      */
       .addCase(addUser.fulfilled, (state, action) => {
         state.items.push(action.payload);
       })
 
-      // DELETE
+      /*
+      DELETE USER
+      */
       .addCase(deleteUser.fulfilled, (state, action) => {
-        state.items = state.items.filter((u) => u.id !== action.payload);
+        state.items = state.items.filter(
+          (user) => user.id !== action.payload
+        );
       })
 
-      // UPDATE
+      /*
+      UPDATE USER
+      */
       .addCase(updateUser.fulfilled, (state, action) => {
-        const index = state.items.findIndex((u) => u.id === action.payload.id);
+        const index = state.items.findIndex(
+          (u) => u.id === action.payload.id
+        );
         if (index !== -1) state.items[index] = action.payload;
       })
 
-      // BLOCK / UNBLOCK
+      /*
+      BLOCK / UNBLOCK USER
+      */
       .addCase(updateUserStatus.fulfilled, (state, action) => {
-        const index = state.items.findIndex((u) => u.id === action.payload.id);
+        const index = state.items.findIndex(
+          (u) => u.id === action.payload.id
+        );
         if (index !== -1) state.items[index] = action.payload;
       });
   },
 });
 
+/*
+==================================================
+EXPORT REDUCER
+==================================================
+*/
 export default userSlice.reducer;

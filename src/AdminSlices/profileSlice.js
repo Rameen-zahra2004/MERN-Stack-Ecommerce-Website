@@ -1,47 +1,59 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api"; // ← uses your api instance instead of raw axios
 
-const API = "http://localhost:3000/profile"; // Base URL for db.json profile
+const API = "/admin/profile";
 
-// FETCH PROFILE
+// ─── Thunks ───────────────────────────────────────────────
 
 export const fetchProfile = createAsyncThunk(
   "profile/fetchProfile",
-  async () => {
-    const res = await axios.get(API); // GET /profile
-    return res.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get(API);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to load profile");
+    }
   }
 );
-
-// UPDATE PROFILE (PUT overwrites the object)
 
 export const updateProfile = createAsyncThunk(
   "profile/updateProfile",
-  async (data) => {
-    const res = await axios.put(API, data); // PUT /profile
-    return res.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await api.put(API, data);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to update profile");
+    }
   }
 );
-
-// UPLOAD AVATAR (PATCH updates only avatar field)
 
 export const uploadAvatar = createAsyncThunk(
   "profile/uploadAvatar",
-  async (avatarDataUrl) => {
-    const res = await axios.patch(API, { avatar: avatarDataUrl }); // PATCH /profile
-    return res.data;
+  async (avatarDataUrl, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(API, { avatar: avatarDataUrl });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to upload avatar");
+    }
   }
 );
-
-// DELETE AVATAR
 
 export const deleteAvatar = createAsyncThunk(
   "profile/deleteAvatar",
-  async () => {
-    const res = await axios.patch(API, { avatar: null }); // PATCH /profile set avatar to null
-    return res.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(API, { avatar: null });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to delete avatar");
+    }
   }
 );
+
+// ─── Slice ────────────────────────────────────────────────
 
 const profileSlice = createSlice({
   name: "profile",
@@ -62,17 +74,14 @@ const profileSlice = createSlice({
       state.theme = action.payload;
       if (state.profile) state.profile.theme = action.payload;
     },
-
     setAccent: (state, action) => {
       state.accent = action.payload;
       if (state.profile) state.profile.accent = action.payload;
     },
-
     toggleSidebarCompact: (state) => {
       state.sidebarCompact = !state.sidebarCompact;
       if (state.profile) state.profile.sidebarCompact = state.sidebarCompact;
     },
-
     clearSuccess: (state) => {
       state.success = false;
     },
@@ -80,9 +89,7 @@ const profileSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-
-      // FETCH PROFILE
-
+      // FETCH
       .addCase(fetchProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -91,19 +98,16 @@ const profileSlice = createSlice({
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.profile = action.payload;
-
-        // Set UI preferences from DB
         state.theme = action.payload.theme || "light";
         state.accent = action.payload.accent || "#0ea5e9";
         state.sidebarCompact = action.payload.sidebarCompact || false;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to load profile";
+        state.error = action.payload;
       })
 
-      // UPDATE PROFILE
-
+      // UPDATE
       .addCase(updateProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -116,47 +120,37 @@ const profileSlice = createSlice({
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to update profile";
+        state.error = action.payload;
       })
 
       // UPLOAD AVATAR
-
       .addCase(uploadAvatar.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(uploadAvatar.fulfilled, (state, action) => {
         state.loading = false;
-
-        if (state.profile) {
-          state.profile.avatar = action.payload.avatar;
-        }
-
         state.success = true;
+        if (state.profile) state.profile.avatar = action.payload.avatar;
       })
       .addCase(uploadAvatar.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to upload avatar";
+        state.error = action.payload;
       })
 
       // DELETE AVATAR
-
       .addCase(deleteAvatar.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(deleteAvatar.fulfilled, (state) => {
         state.loading = false;
-
-        if (state.profile) {
-          state.profile.avatar = null;
-        }
-
         state.success = true;
+        if (state.profile) state.profile.avatar = null;
       })
       .addCase(deleteAvatar.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to delete avatar";
+        state.error = action.payload;
       });
   },
 });

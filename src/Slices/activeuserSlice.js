@@ -1,69 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-// FETCH ACTIVE USERS
-export const fetchActiveUsers = createAsyncThunk(
-  "activeUsers/fetchActiveUsers",
-  async () => {
-    const res = await fetch("http://localhost:3000/activeusers");
-    if (!res.ok) throw new Error("Failed to fetch active users");
-    return await res.json();
-  }
-);
-
-// ADD ACTIVE USER
-export const addActiveUser = createAsyncThunk(
-  "activeUsers/addActiveUser",
-  async (user, { getState }) => {
-    const { activeUsers } = getState();
-    const exists = activeUsers.list.find((u) => u.id === user.id);
-    if (exists) return exists;
-
-    const res = await fetch("http://localhost:3000/activeusers", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    });
-    if (!res.ok) throw new Error("Failed to add active user");
-    return await res.json();
-  }
-);
-
-// REMOVE ACTIVE USER
-export const removeActiveUser = createAsyncThunk(
-  "activeUsers/removeActiveUser",
-  async (userId) => {
-    await fetch(`http://localhost:3000/activeusers/${userId}`, {
-      method: "DELETE",
-    });
-    return userId;
-  }
-);
-
-const activeUsersSlice = createSlice({
+import api from "../api";
+export const fetchActiveUsers = createAsyncThunk("activeUsers/fetch", async (_, { rejectWithValue }) => {
+  try { const res = await api.get("/admin/active-users"); return res.data; }
+  catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+});
+export const addActiveUser = createAsyncThunk("activeUsers/add", async (user, { rejectWithValue }) => {
+  try { const res = await api.post("/admin/active-users", user); return res.data; }
+  catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+});
+export const removeActiveUser = createAsyncThunk("activeUsers/remove", async (userId, { rejectWithValue }) => {
+  try { await api.delete(`/admin/active-users/${userId}`); return userId; }
+  catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+});
+const activeUserSlice = createSlice({
   name: "activeUsers",
-  initialState: { list: [], loading: false, error: null },
+  initialState: { activeUsers: [], loading: false, error: null },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchActiveUsers.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchActiveUsers.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
-      })
-      .addCase(fetchActiveUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(addActiveUser.fulfilled, (state, action) => {
-        if (!state.list.some((u) => u.id === action.payload.id))
-          state.list.push(action.payload);
-      })
-      .addCase(removeActiveUser.fulfilled, (state, action) => {
-        state.list = state.list.filter((u) => u.id !== action.payload);
-      });
+      .addCase(fetchActiveUsers.pending, (s) => { s.loading = true; })
+      .addCase(fetchActiveUsers.fulfilled, (s, a) => { s.loading = false; s.activeUsers = a.payload; })
+      .addCase(fetchActiveUsers.rejected, (s, a) => { s.loading = false; s.error = a.payload; })
+      .addCase(addActiveUser.fulfilled, (s, a) => { s.activeUsers.push(a.payload); })
+      .addCase(removeActiveUser.fulfilled, (s, a) => { s.activeUsers = s.activeUsers.filter((u) => u._id !== a.payload); });
   },
 });
-
-export default activeUsersSlice.reducer;
+export default activeUserSlice.reducer;

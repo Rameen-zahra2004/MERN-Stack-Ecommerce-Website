@@ -1,0 +1,13 @@
+export const ROLES = {
+  USER: "USER",
+  ADMIN: "ADMIN",
+  SUPER_ADMIN: "SUPER_ADMIN",
+  MODERATOR: "MODERATOR",
+};
+
+export const ROLE_HIERARCHY = {
+  USER: 1,
+  MODERATOR: 2,
+  ADMIN: 3,
+  SUPER_ADMIN: 4,
+};

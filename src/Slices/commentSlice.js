@@ -1,105 +1,147 @@
+// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+// import api from "../api";
+// export const fetchComments = createAsyncThunk("comments/fetch", async (_, { rejectWithValue }) => {
+//   try { const res = await api.get("/comments"); return res.data; }
+//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+// });
+// export const addComment = createAsyncThunk("comments/add", async (comment, { rejectWithValue }) => {
+//   try { const res = await api.post("/comments", comment); return res.data; }
+//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+// });
+// export const deleteComment = createAsyncThunk("comments/delete", async (id, { rejectWithValue }) => {
+//   try { await api.delete(`/comments/${id}`); return id; }
+//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
+// });
+// const commentSlice = createSlice({
+//   name: "comments",
+//   initialState: { comments: [], loading: false, error: null },
+//   reducers: {},
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(fetchComments.pending, (s) => { s.loading = true; })
+//       .addCase(fetchComments.fulfilled, (s, a) => { s.loading = false; s.comments = a.payload; })
+//       .addCase(fetchComments.rejected, (s, a) => { s.loading = false; s.error = a.payload; })
+//       .addCase(addComment.fulfilled, (s, a) => { s.comments.push(a.payload); })
+//       .addCase(deleteComment.fulfilled, (s, a) => { s.comments = s.comments.filter((c) => c._id !== a.payload); });
+//   },
+// });
+// export default commentSlice.reducer;
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api";
 
-const COMMENTS_API = "http://localhost:3000/comments";
-
-// Fetch comments + attach user info
-export const fetchCommentsWithUsers = createAsyncThunk(
-  "comments/fetchWithUsers",
-  async (_, { getState }) => {
-    const res = await axios.get(COMMENTS_API);
-    const comments = res.data;
-
-    const users = getState().user.items;
-
-    return comments.map((c) => ({
-      ...c,
-      user: users.find((u) => u.id === c.userId) || null,
-    }));
+// FETCH ALL COMMENTS
+export const fetchComments = createAsyncThunk(
+  "comments/fetch",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/comments");
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch comments");
+    }
   }
 );
 
-// Add comment
+// ADD COMMENT
 export const addComment = createAsyncThunk(
-  "comments/addComment",
-  async ({ postId, userId, text }) => {
-    const res = await axios.post(COMMENTS_API, {
-      postId,
-      userId,
-      text,
-      createdAt: new Date().toISOString(),
-      replies: [],
-    });
-    return res.data;
+  "comments/add",
+  async (comment, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/comments", comment);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to add comment");
+    }
   }
 );
 
-// Add reply (nested level 1 only)
+// DELETE COMMENT
+export const deleteComment = createAsyncThunk(
+  "comments/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/comments/${id}`);
+      return id;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to delete comment");
+    }
+  }
+);
+
+// ✅ ADD REPLY TO A COMMENT
 export const addReply = createAsyncThunk(
   "comments/addReply",
-  async ({ commentId, userId, text }) => {
-    const res = await axios.get(`${COMMENTS_API}/${commentId}`);
-    const existing = res.data;
-
-    const updated = {
-      ...existing,
-      replies: [
-        ...existing.replies,
-        {
-          id: Date.now(),
-          userId,
-          text,
-          createdAt: new Date().toISOString(),
-        },
-      ],
-    };
-
-    const updateRes = await axios.put(`${COMMENTS_API}/${commentId}`, updated);
-    return updateRes.data;
+  async ({ commentId, reply }, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/comments/${commentId}/replies`, reply);
+      return { commentId, reply: res.data };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to add reply");
+    }
   }
 );
 
-// Delete comment
-export const deleteComment = createAsyncThunk(
-  "comments/deleteComment",
-  async (id) => {
-    await axios.delete(`${COMMENTS_API}/${id}`);
-    return id;
-  }
-);
-
-const commentsSlice = createSlice({
+const commentSlice = createSlice({
   name: "comments",
   initialState: {
     comments: [],
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
+    const pending = (state) => {
+      state.loading = true;
+      state.error = null;
+    };
+    const rejected = (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    };
+
     builder
-      .addCase(fetchCommentsWithUsers.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchCommentsWithUsers.fulfilled, (state, action) => {
+      // FETCH COMMENTS
+      .addCase(fetchComments.pending, pending)
+      .addCase(fetchComments.fulfilled, (state, action) => {
         state.loading = false;
         state.comments = action.payload;
       })
-      .addCase(fetchCommentsWithUsers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
+      .addCase(fetchComments.rejected, rejected)
+
+      // ADD COMMENT
+      .addCase(addComment.pending, pending)
       .addCase(addComment.fulfilled, (state, action) => {
+        state.loading = false;
         state.comments.push(action.payload);
       })
-      .addCase(addReply.fulfilled, (state, action) => {
-        const i = state.comments.findIndex((c) => c.id === action.payload.id);
-        if (i !== -1) state.comments[i] = action.payload;
-      })
+      .addCase(addComment.rejected, rejected)
+
+      // DELETE COMMENT
+      .addCase(deleteComment.pending, pending)
       .addCase(deleteComment.fulfilled, (state, action) => {
-        state.comments = state.comments.filter((c) => c.id !== action.payload);
-      });
+        state.loading = false;
+        state.comments = state.comments.filter((c) => c._id !== action.payload);
+      })
+      .addCase(deleteComment.rejected, rejected)
+
+      // ✅ ADD REPLY
+      .addCase(addReply.pending, pending)
+      .addCase(addReply.fulfilled, (state, action) => {
+        state.loading = false;
+        const { commentId, reply } = action.payload;
+        const comment = state.comments.find((c) => c._id === commentId);
+        if (comment) {
+          if (!comment.replies) comment.replies = [];
+          comment.replies.push(reply);
+        }
+      })
+      .addCase(addReply.rejected, rejected);
   },
 });
 
-export default commentsSlice.reducer;
+export const { clearError } = commentSlice.actions;
+export default commentSlice.reducer;

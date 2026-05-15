@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// -------------------- THUNKS --------------------
+
 // Fetch all orders for a user
 export const fetchUserOrders = createAsyncThunk(
   "order/fetchUserOrders",
@@ -47,6 +49,8 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
+// -------------------- INITIAL STATE --------------------
+
 const initialState = {
   orders: [],
   ordersDetail: null,
@@ -54,6 +58,8 @@ const initialState = {
   error: null,
   updatingOrderId: null,
 };
+
+// -------------------- SLICE --------------------
 
 const orderSlice = createSlice({
   name: "order",
@@ -65,7 +71,6 @@ const orderSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch user orders
       .addCase(fetchUserOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -79,7 +84,6 @@ const orderSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Fetch single order detail
       .addCase(fetchOrdersDetail.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -93,24 +97,25 @@ const orderSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Update order status
-      .addCase(updateOrderStatus.pending, (state, action) => {
-        state.updatingOrderId = action.meta.arg.orderId;
-      })
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        state.updatingOrderId = null;
         const updatedOrder = action.payload;
-        const index = state.orders.findIndex((o) => o._id === updatedOrder._id);
-        if (index !== -1) state.orders[index] = updatedOrder;
-        if (state.ordersDetail?._id === updatedOrder._id)
+
+        const index = state.orders.findIndex(
+          (o) => o._id === updatedOrder._id
+        );
+
+        if (index !== -1) {
+          state.orders[index] = updatedOrder;
+        }
+
+        if (state.ordersDetail?._id === updatedOrder._id) {
           state.ordersDetail = updatedOrder;
-      })
-      .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.updatingOrderId = null;
-        state.error = action.payload;
+        }
       });
   },
 });
+
+// -------------------- EXPORTS --------------------
 
 export const { clearOrdersDetail } = orderSlice.actions;
 export default orderSlice.reducer;

@@ -1,61 +1,69 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// -------------------------
-// Fetch logged-in user profile
-// -------------------------
+/* =========================
+   FETCH USER PROFILE
+========================= */
 export const fetchUser = createAsyncThunk(
   "userSettings/fetchUser",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const { user: authUser } = getState().auth; // get logged-in user from auth slice
-      if (!authUser) throw new Error("User not authenticated");
+      const { user: authUser } = getState().auth;
 
-      // Only fetch from users endpoint if role is "user"
-      if (authUser.role === "user") {
-        const res = await fetch(`http://localhost:3000/users/${authUser.id}`);
-        if (!res.ok) throw new Error("Failed to fetch user data");
-        const data = await res.json();
-        return data;
+      if (!authUser) {
+        return rejectWithValue("User not authenticated");
       }
 
-      // Admins should not fetch this slice
-      return rejectWithValue("Admins cannot fetch user settings");
-    } catch (error) {
-      return rejectWithValue(error.message);
+      const res = await fetch(
+        `http://localhost:3000/users/${authUser.id}`
+      );
+
+      if (!res.ok) {
+        return rejectWithValue("Failed to fetch user data");
+      }
+
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
-// -------------------------
-// Update profile
-// -------------------------
+/* =========================
+   UPDATE USER PROFILE
+========================= */
 export const updateUser = createAsyncThunk(
   "userSettings/updateUser",
   async (updatedUser, { getState, rejectWithValue }) => {
     try {
       const { user: authUser } = getState().auth;
+
       if (!authUser || authUser.role !== "user") {
-        throw new Error("Unauthorized");
+        return rejectWithValue("Unauthorized");
       }
 
-      const res = await fetch(`http://localhost:3000/users/${authUser.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedUser),
-      });
+      const res = await fetch(
+        `http://localhost:3000/users/${authUser.id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedUser),
+        }
+      );
 
-      if (!res.ok) throw new Error("Failed to update profile");
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+      if (!res.ok) {
+        return rejectWithValue("Failed to update profile");
+      }
+
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
-// -------------------------
-// Slice
-// -------------------------
+/* =========================
+   SLICE
+========================= */
 const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState: {
@@ -66,8 +74,9 @@ const userSettingsSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    // Fetch user
     builder
+
+      /* FETCH USER */
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -79,10 +88,9 @@ const userSettingsSlice = createSlice({
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // Update profile
-    builder
+      /* UPDATE USER */
       .addCase(updateUser.pending, (state) => {
         state.saving = true;
         state.error = null;
