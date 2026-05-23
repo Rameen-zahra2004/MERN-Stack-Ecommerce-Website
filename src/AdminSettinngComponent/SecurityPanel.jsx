@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import {
-  fetchAdmin,
-  changePassword,
-  toggle2FA,
-} from "../AdminSlices/securitySlice";
+import { changePassword, toggle2FA } from "../AdminSlices/securitySlice";
 
-// Action Button
+// ✅ FIX: removed useEffect + fetchAdmin dispatch
+// AdminSetting.jsx already fetches all data once on mount
+// SecurityPanel just reads from Redux state
+
 function ActionButton({ onClick, loading, children, color = "green" }) {
   const base =
     "py-2 px-4 rounded-md font-medium text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2";
@@ -33,20 +32,13 @@ function ActionButton({ onClick, loading, children, color = "green" }) {
 
 export default function SecurityPanel() {
   const dispatch = useDispatch();
-  const { loading, error, twoFAEnabled } = useSelector(
-    (state) => state.security
-  );
+  const { loading, error, twoFAEnabled } = useSelector((state) => state.security);
 
-  const [passwords, setPasswords] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
+  const [passwords, setPasswords] = useState({ oldPassword: "", newPassword: "" });
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchAdmin());
-  }, [dispatch]);
+  // ✅ NO useEffect here — AdminSetting.jsx handles all fetching
 
   const handlePasswordChange = () => {
     dispatch(changePassword(passwords));
@@ -71,9 +63,7 @@ export default function SecurityPanel() {
             type={showOldPassword ? "text" : "password"}
             placeholder="Old Password"
             value={passwords.oldPassword}
-            onChange={(e) =>
-              setPasswords({ ...passwords, oldPassword: e.target.value })
-            }
+            onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
             className="border p-2 rounded-md w-full pr-10"
           />
           <span
@@ -89,9 +79,7 @@ export default function SecurityPanel() {
             type={showNewPassword ? "text" : "password"}
             placeholder="New Password"
             value={passwords.newPassword}
-            onChange={(e) =>
-              setPasswords({ ...passwords, newPassword: e.target.value })
-            }
+            onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
             className="border p-2 rounded-md w-full pr-10"
           />
           <span

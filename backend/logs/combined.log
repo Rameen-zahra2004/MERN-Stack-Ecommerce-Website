@@ -1,0 +1,5 @@
+{"level":"warn","message":"CORS BLOCKED: http://localhost:5173","service":"ecommerce-api","timestamp":"2026-05-14T16:47:34.473Z"}
+{"level":"warn","message":"CORS BLOCKED: http://localhost:5173","service":"ecommerce-api","timestamp":"2026-05-15T17:00:23.067Z"}
+{"level":"warn","message":"CORS BLOCKED: http://localhost:5173","service":"ecommerce-api","timestamp":"2026-05-16T08:08:20.836Z"}
+{"level":"warn","message":"CORS BLOCKED: http://localhost:5173","service":"ecommerce-api","timestamp":"2026-05-18T09:06:41.171Z"}
+{"level":"warn","message":"CORS BLOCKED: http://localhost:5173","service":"ecommerce-api","timestamp":"2026-05-18T09:10:29.124Z"}

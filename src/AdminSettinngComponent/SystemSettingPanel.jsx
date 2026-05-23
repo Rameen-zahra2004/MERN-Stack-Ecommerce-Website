@@ -4,8 +4,10 @@ import {
   updateSystem,
   createApiKey,
   revokeApiKey,
-  fetchSystem,
 } from "../AdminSlices/systemSlice";
+
+// ✅ FIX: removed fetchSystem import and the loop-causing useEffect
+// AdminSetting.jsx already fetches system once on mount
 
 export default function SystemSettingsPanel({ system: systemProp }) {
   const dispatch = useDispatch();
@@ -14,7 +16,6 @@ export default function SystemSettingsPanel({ system: systemProp }) {
 
   const system = systemFromStore || systemProp || null;
 
-  // Fully controlled form state
   const [form, setForm] = useState({
     siteTitle: "",
     footer: "",
@@ -24,7 +25,7 @@ export default function SystemSettingsPanel({ system: systemProp }) {
 
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  // Update form when system data loads
+  // ✅ This useEffect is fine — only syncs form when system data arrives, no dispatch
   useEffect(() => {
     if (system) {
       setForm({
@@ -36,10 +37,10 @@ export default function SystemSettingsPanel({ system: systemProp }) {
     }
   }, [system]);
 
-  // Fetch system if not available
-  useEffect(() => {
-    if (!systemFromStore && !systemProp) dispatch(fetchSystem());
-  }, [dispatch, systemFromStore, systemProp]);
+  // ✅ REMOVED the loop-causing useEffect:
+  // useEffect(() => {
+  //   if (!systemFromStore && !systemProp) dispatch(fetchSystem()); ← caused infinite loop
+  // }, [dispatch, systemFromStore, systemProp]);
 
   const triggerMessage = (type, text) => {
     setMessage({ type, text });
@@ -50,7 +51,6 @@ export default function SystemSettingsPanel({ system: systemProp }) {
     try {
       await dispatch(updateSystem(form)).unwrap();
       triggerMessage("success", "System settings saved successfully");
-      dispatch(fetchSystem());
     } catch (err) {
       triggerMessage("error", err.message || "Failed to save system settings");
     }
@@ -62,19 +62,16 @@ export default function SystemSettingsPanel({ system: systemProp }) {
     try {
       await dispatch(createApiKey(name.trim())).unwrap();
       triggerMessage("success", "API key created successfully");
-      dispatch(fetchSystem());
     } catch (err) {
       triggerMessage("error", err.message || "Failed to create API key");
     }
   };
 
   const revokeKey = async (id) => {
-    if (!window.confirm("Are you sure you want to revoke this API key?"))
-      return;
+    if (!window.confirm("Are you sure you want to revoke this API key?")) return;
     try {
       await dispatch(revokeApiKey(id)).unwrap();
       triggerMessage("success", "API key revoked successfully");
-      dispatch(fetchSystem());
     } catch (err) {
       triggerMessage("error", err.message || "Failed to revoke API key");
     }
@@ -109,10 +106,7 @@ export default function SystemSettingsPanel({ system: systemProp }) {
         {/* General Settings */}
         <div className="flex-1 space-y-4">
           <div>
-            <label
-              htmlFor="siteTitle"
-              className="block text-sm font-medium mb-1"
-            >
+            <label htmlFor="siteTitle" className="block text-sm font-medium mb-1">
               Site Title
             </label>
             <input
@@ -142,10 +136,7 @@ export default function SystemSettingsPanel({ system: systemProp }) {
           </div>
 
           <div>
-            <label
-              htmlFor="smtpHost"
-              className="block text-sm font-medium mb-1"
-            >
+            <label htmlFor="smtpHost" className="block text-sm font-medium mb-1">
               SMTP Host
             </label>
             <input
@@ -154,10 +145,7 @@ export default function SystemSettingsPanel({ system: systemProp }) {
               autoComplete="off"
               value={form.smtp.host}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  smtp: { ...form.smtp, host: e.target.value },
-                })
+                setForm({ ...form, smtp: { ...form.smtp, host: e.target.value } })
               }
               className="w-full border rounded-md p-2"
               disabled={loading}
@@ -172,10 +160,7 @@ export default function SystemSettingsPanel({ system: systemProp }) {
               onChange={(e) =>
                 setForm({
                   ...form,
-                  notifications: {
-                    ...form.notifications,
-                    email: e.target.checked,
-                  },
+                  notifications: { ...form.notifications, email: e.target.checked },
                 })
               }
               disabled={loading}

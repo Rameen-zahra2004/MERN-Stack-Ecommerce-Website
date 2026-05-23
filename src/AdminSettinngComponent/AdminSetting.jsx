@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, Suspense, lazy } from "react";
+import React, { useEffect, useRef, Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "../AdminSlices/profileSlice";
 import { fetchLogins } from "../AdminSlices/adminLoginSlice";
@@ -8,20 +8,12 @@ import { fetchActivity } from "../AdminSlices/activitySlice";
 
 // Lazy load components
 const ProfileForm = lazy(() => import("../AdminSettinngComponent/ProfileForm"));
-const SecurityPanel = lazy(() =>
-  import("../AdminSettinngComponent/SecurityPanel")
-);
+const SecurityPanel = lazy(() => import("../AdminSettinngComponent/SecurityPanel"));
 const ThemePanel = lazy(() => import("../AdminSettinngComponent/ThemePanel"));
-const PermissionsPanel = lazy(() =>
-  import("../AdminSettinngComponent/PermissionPanel")
-);
-const SystemSettingsPanel = lazy(() =>
-  import("../AdminSettinngComponent/SystemSettingPanel")
-);
+const PermissionsPanel = lazy(() => import("../AdminSettinngComponent/PermissionPanel"));
+const SystemSettingsPanel = lazy(() => import("../AdminSettinngComponent/SystemSettingPanel"));
 const ActivityLogs = lazy(() => import("../Admin component/ActivityLogs"));
-const ExportDeletePanel = lazy(() =>
-  import("../AdminSettinngComponent/ExportDeletePanel")
-);
+const ExportDeletePanel = lazy(() => import("../AdminSettinngComponent/ExportDeletePanel"));
 
 // Skeleton loader
 const SkeletonLoader = ({ className = "" }) => (
@@ -77,64 +69,51 @@ const ComponentWrapper = ({ children }) => (
   </ErrorBoundary>
 );
 
-// Main AdminSettings component
 export default function AdminSettings() {
   const dispatch = useDispatch();
 
-  // Redux slices
-  const {
-    profile,
-    loading: profileLoading,
-    error: profileError,
-  } = useSelector((state) => state.profile);
-  const {
-    logins,
-    loading: loginsLoading,
-    error: loginsError,
-  } = useSelector((state) => state.logins);
-  const {
-    roles,
-    loading: rolesLoading,
-    error: rolesError,
-  } = useSelector((state) => state.roles);
-  const {
-    system,
-    loading: systemLoading,
-    error: systemError,
-  } = useSelector((state) => state.system);
-  const {
-    activity,
-    loading: activityLoading,
-    error: activityError,
-  } = useSelector((state) => state.activity);
+  // ✅ FIX: use a ref to track if we already fetched — survives re-renders
+  const hasFetched = useRef(false);
 
-  const loading =
-    profileLoading ||
-    loginsLoading ||
-    rolesLoading ||
-    systemLoading ||
-    activityLoading;
-  const error =
-    profileError || loginsError || rolesError || systemError || activityError;
+  const { profile, loading: profileLoading, error: profileError } = useSelector((state) => state.profile);
+  const { logins, loading: loginsLoading, error: loginsError } = useSelector((state) => state.logins);
+  const { roles, loading: rolesLoading, error: rolesError } = useSelector((state) => state.roles);
+  const { system, loading: systemLoading, error: systemError } = useSelector((state) => state.system);
+  const { activities, loading: activityLoading, error: activityError } = useSelector((state) => state.activity);
 
-  const fetchAll = useCallback(() => {
+  const loading = profileLoading || loginsLoading || rolesLoading || systemLoading || activityLoading;
+  const error = profileError || loginsError || rolesError || systemError || activityError;
+
+  // ✅ FIX: empty deps [] — runs ONCE on mount only, never again
+  // hasFetched ref prevents double-fire in React Strict Mode
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     dispatch(fetchProfile());
     dispatch(fetchLogins());
     dispatch(fetchRoles());
     dispatch(fetchSystem());
     dispatch(fetchActivity());
-  }, [dispatch]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+  // Manual retry — only called when user clicks Retry button
+  const handleRetry = () => {
+    hasFetched.current = false; // reset so retry works
+    hasFetched.current = true;
+    dispatch(fetchProfile());
+    dispatch(fetchLogins());
+    dispatch(fetchRoles());
+    dispatch(fetchSystem());
+    dispatch(fetchActivity());
+  };
 
   const safeData = {
     profile: profile || null,
     logins: logins || [],
     roles: roles || [],
     system: system || null,
-    activity: activity || [],
+    activities: activities || [],
   };
 
   if (loading && !profile) {
@@ -153,10 +132,7 @@ export default function AdminSettings() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h2 className="text-3xl font-semibold">Admin Settings</h2>
         {error && (
-          <button
-            onClick={fetchAll}
-            className="text-blue-600 underline text-sm"
-          >
+          <button onClick={handleRetry} className="text-blue-600 underline text-sm">
             Retry
           </button>
         )}
@@ -178,7 +154,7 @@ export default function AdminSettings() {
           </ComponentWrapper>
 
           <ComponentWrapper>
-            <SecurityPanel security={{ logins: safeData.logins }} />
+            <SecurityPanel />
           </ComponentWrapper>
 
           <ComponentWrapper>
@@ -197,7 +173,7 @@ export default function AdminSettings() {
           </ComponentWrapper>
 
           <ComponentWrapper>
-            <ActivityLogs activity={safeData.activity} />
+            <ActivityLogs activity={safeData.activities} />
           </ComponentWrapper>
 
           <ComponentWrapper>

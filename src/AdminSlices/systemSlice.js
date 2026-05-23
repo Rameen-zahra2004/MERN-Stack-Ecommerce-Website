@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api"; // ✅ FIXED: use api instead of raw axios
 
 /* =========================
    FETCH SYSTEM SETTINGS
@@ -8,7 +8,7 @@ export const fetchSystem = createAsyncThunk(
   "system/fetchSystem",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get("http://localhost:3000/systemSettings");
+      const res = await api.get("/system-settings"); // ✅ FIXED: was localhost:3000/systemSettings
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to fetch system");
@@ -23,7 +23,7 @@ export const updateSystem = createAsyncThunk(
   "system/updateSystem",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await axios.put("http://localhost:3000/systemSettings", data);
+      const res = await api.put("/system-settings", data); // ✅ FIXED
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to update system");
@@ -44,7 +44,7 @@ export const createApiKey = createAsyncThunk(
         key: crypto.randomUUID(),
       };
 
-      const res = await axios.post("http://localhost:3000/apiKeys", newKey);
+      const res = await api.post("/api-keys", newKey); // ✅ FIXED: was localhost:3000/apiKeys
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to create API key");
@@ -59,7 +59,7 @@ export const revokeApiKey = createAsyncThunk(
   "system/revokeApiKey",
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`http://localhost:3000/apiKeys/${id}`);
+      await api.delete(`/api-keys/${id}`); // ✅ FIXED: was localhost:3000/apiKeys
       return id;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to delete API key");
@@ -105,7 +105,6 @@ const systemSlice = createSlice({
       /* CREATE API KEY */
       .addCase(createApiKey.fulfilled, (state, action) => {
         state.apiKeys.push(action.payload);
-
         if (state.system) {
           if (!state.system.apiKeys) state.system.apiKeys = [];
           state.system.apiKeys.push(action.payload);
@@ -115,7 +114,6 @@ const systemSlice = createSlice({
       /* DELETE API KEY */
       .addCase(revokeApiKey.fulfilled, (state, action) => {
         state.apiKeys = state.apiKeys.filter((k) => k.id !== action.payload);
-
         if (state.system?.apiKeys) {
           state.system.apiKeys = state.system.apiKeys.filter(
             (k) => k.id !== action.payload

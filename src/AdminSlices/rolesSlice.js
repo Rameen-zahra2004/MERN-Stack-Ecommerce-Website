@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-const API = "/admin/roles";
+const API = "/admins/roles"; // ✅ FIXED: was "/admin/roles"
 
-// Fetch all roles
 export const fetchRoles = createAsyncThunk(
   "roles/fetchRoles",
   async (_, { rejectWithValue }) => {
@@ -16,7 +15,6 @@ export const fetchRoles = createAsyncThunk(
   }
 );
 
-// Add a new role
 export const addRole = createAsyncThunk(
   "roles/addRole",
   async (role, { rejectWithValue }) => {
@@ -29,7 +27,6 @@ export const addRole = createAsyncThunk(
   }
 );
 
-// Delete a role
 export const deleteRole = createAsyncThunk(
   "roles/deleteRole",
   async (id, { rejectWithValue }) => {
@@ -63,7 +60,6 @@ const rolesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch roles
       .addCase(fetchRoles.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -78,7 +74,6 @@ const rolesSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Add role
       .addCase(addRole.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -93,7 +88,6 @@ const rolesSlice = createSlice({
         state.error = action.payload;
       })
 
-      // Delete role
       .addCase(deleteRole.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +95,6 @@ const rolesSlice = createSlice({
       .addCase(deleteRole.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        // handles both _id (MongoDB) and id (db.json)
         state.roles = state.roles.filter(
           (r) => r._id !== action.payload && r.id !== action.payload
         );

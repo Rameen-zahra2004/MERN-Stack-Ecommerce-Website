@@ -6,7 +6,7 @@ export const fetchActivity = createAsyncThunk(
   "activity/fetchActivity",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/activityLogs/activity");
+      const res = await api.get("/activity-logs"); // ✅ FIXED: was "/activityLogs/activity"
 
       if (Array.isArray(res.data)) return res.data;
       return res.data?.data ?? [];
@@ -48,7 +48,6 @@ const activitySlice = createSlice({
   },
 });
 
-// Selector
 export const selectAllActivity = (state) => state.activity.activities ?? [];
 
 export const { clearActivity } = activitySlice.actions;

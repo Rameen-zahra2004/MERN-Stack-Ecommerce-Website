@@ -10,23 +10,37 @@ const api = axios.create({
   },
 });
 
-// Attach token to every request if present
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// ✅ FIXED: attach token to every request
+api.interceptors.request.use(
+  (config) => {
+    // try token from localStorage (adjust key name to match your app)
+    const token =
+      localStorage.getItem("token") ||
+      (() => {
+        try {
+          const user = JSON.parse(localStorage.getItem("currentUser"));
+          return user?.token ?? null;
+        } catch {
+          return null;
+        }
+      })();
 
-// Handle 401 globally
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// ✅ FIXED: no redirect on 401 — just reject so components handle it gracefully
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
+    // do NOT redirect here — it causes infinite re-render loop
+    // each 401 was triggering window.location.href = "/signin"
+    // which remounted the component, which re-fetched, which got 401 again
     return Promise.reject(error);
   }
 );

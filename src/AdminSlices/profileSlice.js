@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from "../api"; // ← uses your api instance instead of raw axios
+import api from "../api";
 
-const API = "/admin/profile";
+const API = "/profile"; // ✅ FIXED: was "/admin/profile"
 
 // ─── Thunks ───────────────────────────────────────────────
 
@@ -62,8 +62,6 @@ const profileSlice = createSlice({
     loading: false,
     error: null,
     success: false,
-
-    // UI preferences
     theme: "light",
     accent: "#0ea5e9",
     sidebarCompact: false,
@@ -89,7 +87,6 @@ const profileSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      // FETCH
       .addCase(fetchProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -107,7 +104,6 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
 
-      // UPDATE
       .addCase(updateProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -123,7 +119,6 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
 
-      // UPLOAD AVATAR
       .addCase(uploadAvatar.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -138,7 +133,6 @@ const profileSlice = createSlice({
         state.error = action.payload;
       })
 
-      // DELETE AVATAR
       .addCase(deleteAvatar.pending, (state) => {
         state.loading = true;
         state.error = null;

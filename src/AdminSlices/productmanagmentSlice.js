@@ -1,13 +1,26 @@
 // src/redux/adminProductsSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Fetch products from FakeStore API
+// Fetch products from DummyJSON API
 export const fetchAdminProducts = createAsyncThunk(
   "adminProducts/fetchProducts",
   async () => {
-    const res = await fetch("https://fakestoreapi.com/products");
+    const res = await fetch(
+      `${import.meta.env.VITE_PRODUCTS_API}/products?limit=100`
+    );
     if (!res.ok) throw new Error("Failed to fetch");
-    return await res.json();
+    const data = await res.json();
+
+    // DummyJSON returns { products: [...] }
+    return data.products.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      category: item.category,
+      description: item.description,
+      image: item.thumbnail, // dummyjson uses "thumbnail" instead of "image"
+      rating: item.rating,
+    }));
   }
 );
 

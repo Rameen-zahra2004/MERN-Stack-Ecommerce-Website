@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-const API = "/admin/security";
+const API = "/admins/security"; // ✅ FIXED: was "/admin/security"
 
-// Fetch admin info
 export const fetchAdmin = createAsyncThunk(
   "security/fetchAdmin",
   async (_, { rejectWithValue }) => {
@@ -16,7 +15,6 @@ export const fetchAdmin = createAsyncThunk(
   }
 );
 
-// Change password
 export const changePassword = createAsyncThunk(
   "security/changePassword",
   async ({ oldPassword, newPassword }, { getState, rejectWithValue }) => {
@@ -35,7 +33,6 @@ export const changePassword = createAsyncThunk(
   }
 );
 
-// Toggle 2FA
 export const toggle2FA = createAsyncThunk(
   "security/toggle2FA",
   async (enabled, { rejectWithValue }) => {
@@ -68,7 +65,6 @@ const securitySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch admin
       .addCase(fetchAdmin.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -85,7 +81,6 @@ const securitySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Change password
       .addCase(changePassword.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +96,6 @@ const securitySlice = createSlice({
         state.error = action.payload;
       })
 
-      // Toggle 2FA
       .addCase(toggle2FA.pending, (state) => {
         state.loading = true;
         state.error = null;

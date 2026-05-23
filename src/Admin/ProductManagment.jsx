@@ -40,9 +40,12 @@ export default function AdminProductManagement() {
     return "other";
   };
 
+  // ✅ FIX: only fetch if products not already loaded
   useEffect(() => {
-    dispatch(fetchAdminProducts());
-  }, [dispatch]);
+    if (products.length === 0) {
+      dispatch(fetchAdminProducts());
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const groupedProducts = useMemo(() => {
     const filtered = products.filter(
