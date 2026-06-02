@@ -296,7 +296,7 @@ This project is licensed under the MIT License.
 
 * Full Stack MERN Developer
 * GitHub: [https://github.com/Rameen-zahra2004](https://github.com/Rameen-zahra2004)
-* LinkedIn: Add Your LinkedIn Profile
+* LinkedIn:[Rameen Zahra](https://www.linkedin.com/in/rameen-zahra-5a31a7381)
 
 ---
 
