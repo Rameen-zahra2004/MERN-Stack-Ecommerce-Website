@@ -1,111 +1,135 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import adminApi from "../api/adminApi";
 
-// ─── localStorage helpers ─────────────────────────────────
+// ─── LOGIN ────────────────────────────────────────────────
+export const loginAdmin = createAsyncThunk(
+  "adminLogin/loginAdmin",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const res = await adminApi.post("/admin/login", { email, password });
+      return res.data.admin;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+// ─── LOGOUT ───────────────────────────────────────────────
+export const logoutAdmin = createAsyncThunk(
+  "adminLogin/logoutAdmin",
+  async (_, { rejectWithValue }) => {
+    try {
+      await adminApi.post("/admin/logout");
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+// ─── GET OWN PROFILE (used on app load to rehydrate) ─────
+export const getAdminProfile = createAsyncThunk(
+  "adminLogin/getAdminProfile",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await adminApi.get("/admin/me");
+      return res.data.admin;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
+
+// ─── LOGIN LOGS (kept here, localStorage only) ────────────
 const getLoginLogs = () =>
   JSON.parse(localStorage.getItem("loginLogs") || "[]");
 
 const saveLoginLog = (logs) =>
   localStorage.setItem("loginLogs", JSON.stringify(logs));
 
-// ─── Auto-track login: call this from signinSlice after login ─
-export const trackLogin = (user) => {
+export const trackLogin = (admin) => {
   const logs = getLoginLogs();
   const newLog = {
     id: Date.now(),
-    userId: user.id,
-    email: user.email,
-    fullName: user.fullName || user.name || "Unknown",
-    role: user.role || "user",
+    userId: admin._id || admin.id,
+    email: admin.email,
+    fullName: admin.fullName || admin.name || "Unknown",
+    role: admin.role || "admin",
     loginTime: new Date().toISOString(),
     status: "success",
   };
   saveLoginLog([newLog, ...logs]);
 };
 
-// ─── Fetch login logs ─────────────────────────────────────
-export const fetchLogins = createAsyncThunk(
-  "adminLogin/fetchLogins",
-  async (_, { rejectWithValue }) => {
-    try {
-      const logs = getLoginLogs();
-      return logs;
-    } catch {
-      return rejectWithValue("Failed to fetch login logs");
-    }
-  }
-);
-
-// ─── Clear all login logs ─────────────────────────────────
-export const clearLoginLogs = createAsyncThunk(
-  "adminLogin/clearLoginLogs",
-  async (_, { rejectWithValue }) => {
-    try {
-      localStorage.removeItem("loginLogs");
-      return [];
-    } catch {
-      return rejectWithValue("Failed to clear login logs");
-    }
-  }
-);
-
-// ─── Delete single log ────────────────────────────────────
-export const deleteLoginLog = createAsyncThunk(
-  "adminLogin/deleteLoginLog",
-  async (id, { rejectWithValue }) => {
-    try {
-      const logs = getLoginLogs().filter((l) => l.id !== id);
-      saveLoginLog(logs);
-      return id;
-    } catch {
-      return rejectWithValue("Failed to delete login log");
-    }
-  }
-);
-
-// ─── Slice ────────────────────────────────────────────────
+// ─── SLICE ────────────────────────────────────────────────
 const adminLoginSlice = createSlice({
   name: "adminLogin",
   initialState: {
-    logins: [],
+    admin: null,
+    isAuthenticated: false,
     loading: false,
     error: null,
+    // login logs (activity tracking, localStorage only)
+    logins: [],
   },
 
   reducers: {
+    clearAdminError: (state) => {
+      state.error = null;
+    },
     clearLogins: (state) => {
       state.logins = [];
-      state.error = null;
       localStorage.removeItem("loginLogs");
     },
   },
 
   extraReducers: (builder) => {
     builder
-      // Fetch
-      .addCase(fetchLogins.pending, (state) => {
+      // ── LOGIN ──
+      .addCase(loginAdmin.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchLogins.fulfilled, (state, action) => {
+      .addCase(loginAdmin.fulfilled, (state, action) => {
         state.loading = false;
-        state.logins = action.payload;
+        state.admin = action.payload;
+        state.isAuthenticated = true;
+        // track in localStorage logs
+        trackLogin(action.payload);
       })
-      .addCase(fetchLogins.rejected, (state, action) => {
+      .addCase(loginAdmin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      // Clear all
-      .addCase(clearLoginLogs.fulfilled, (state) => {
-        state.logins = [];
+      // ── LOGOUT ──
+      .addCase(logoutAdmin.fulfilled, (state) => {
+        state.admin = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(logoutAdmin.rejected, (state, action) => {
+        // even if backend fails, clear frontend state
+        state.admin = null;
+        state.isAuthenticated = false;
+        state.error = action.payload;
       })
 
-      // Delete single
-      .addCase(deleteLoginLog.fulfilled, (state, action) => {
-        state.logins = state.logins.filter((l) => l.id !== action.payload);
+      // ── GET PROFILE (rehydrate on app load) ──
+      .addCase(getAdminProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAdminProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.admin = action.payload;
+        state.isAuthenticated = true;
+      })
+      .addCase(getAdminProfile.rejected, (state) => {
+        state.loading = false;
+        state.admin = null;
+        state.isAuthenticated = false;
       });
   },
 });
 
-export const { clearLogins } = adminLoginSlice.actions;
+export const { clearAdminError, clearLogins } = adminLoginSlice.actions;
 export default adminLoginSlice.reducer;

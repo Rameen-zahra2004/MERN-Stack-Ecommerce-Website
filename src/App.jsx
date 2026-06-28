@@ -6,20 +6,21 @@
 // import Header from "./Component/Header";
 // import Footer from "./Component/Footer";
 
-// import Admin from "./Admin/Admin";
 // import ProtectedRoute from "./Admin/Protectedcomponent";
 
+// /* ================= PUBLIC PAGES ================= */
 // import Product from "./Pages/Product";
 // import ProductPage from "./Pages/ProductPage";
-// import UserOrderPage from "./Pages/UserOrder";
 // import UserCartPage from "./Pages/Cart";
 // import Checkout from "./Component/CheckoutPage";
 // import Signin from "./Pages/Sign";
-// import DashboardHome from "./Admin/Dashboard";
 // import NotFound from "./Component/Errorpage";
 // import ServerError from "./Component/ServerError";
 
-// import AdminuserPage from "./Admin/Userpage";
+// /* ================= ADMIN ================= */
+// import Admin from "./Admin/Admin";
+// import DashboardHome from "./Admin/Dashboard";
+// import AdminUserPage from "./Admin/Userpage";
 // import AdminCartPage from "./Admin/CartPage";
 // import AdminProductManagement from "./Admin/ProductManagment";
 // import RevenueCard from "./Admin component/RevenueComponent";
@@ -27,6 +28,7 @@
 // import AdminSettings from "./AdminSettinngComponent/AdminSetting";
 // import AdminOrdersPage from "./Admin/AdminOrderspage";
 
+// /* ================= USER ================= */
 // import UserPage from "./Pages/User";
 // import UserOrdersPage from "./Pages/UserOrder";
 // import UserWishlistPage from "./Pages/WishList";
@@ -36,9 +38,9 @@
 // function App() {
 //   const [sidebarOpen, setSidebarOpen] = useState(false);
 //   const { pathname } = useLocation();
+//   const theme = useSelector((state) => state.theme.theme);
 
 //   const isAdminRoute = pathname.startsWith("/admin");
-//   const theme = useSelector((state) => state.theme.theme);
 
 //   useEffect(() => {
 //     const html = document.documentElement;
@@ -47,14 +49,28 @@
 //   }, [theme]);
 
 //   return (
-//     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 relative overflow-x-hidden text-gray-900 dark:text-gray-200 transition-colors duration-300">
-//       {/* Sidebar + Header only for non-admin routes */}
+//     <div
+//       className="
+//         min-h-screen
+//         bg-linear-to-br from-[#fff1f7] via-[#fff8fb] to-[#ffe8f1]
+//         dark:bg-gray-900
+//         text-gray-900 dark:text-gray-200
+//       "
+//     >
+//       {/* subtle glow background layer */}
+//       <div className="fixed inset-0 pointer-events-none">
+//         <div className="absolute -top-32 -left-32 w-96 h-96 bg-pink-300/20 blur-3xl rounded-full" />
+//         <div className="absolute top-1/2 right-0 w-md h-112 bg-rose-300/20 blur-3xl rounded-full" />
+//         <div className="absolute bottom-0 left-1/3 w-120 h-120 bg-pink-200/20 blur-3xl rounded-full" />
+//       </div>
+
+//       {/* ================= USER LAYOUT ================= */}
 //       {!isAdminRoute && (
 //         <>
 //           <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
 //           <div
-//             className={`transition-all duration-300 ease ${
+//             className={`transition-all duration-300 relative z-10 ${
 //               sidebarOpen ? "ml-64" : "ml-0"
 //             }`}
 //           >
@@ -63,18 +79,16 @@
 //         </>
 //       )}
 
-//       {/* Main content */}
-//       <main
-//         className={!isAdminRoute ? "p-4 transition-colors duration-300" : ""}
-//       >
+//       {/* ================= MAIN CONTENT ================= */}
+//       <main className={`relative z-10 ${!isAdminRoute ? "p-4" : ""}`}>
 //         <Routes>
-//           {/* Public Routes */}
+//           {/* PUBLIC */}
 //           <Route path="/signin" element={<Signin />} />
 //           <Route path="/" element={<Product />} />
 //           <Route path="/products/:id" element={<ProductPage />} />
 //           <Route path="/cart" element={<UserCartPage />} />
 
-//           {/* User Protected Routes */}
+//           {/* USER */}
 //           <Route
 //             path="/user/*"
 //             element={
@@ -86,7 +100,7 @@
 //           <Route
 //             path="/user/orders"
 //             element={
-//               <ProtectedRoute>
+//               <ProtectedRoute role="user">
 //                 <UserOrdersPage />
 //               </ProtectedRoute>
 //             }
@@ -94,7 +108,7 @@
 //           <Route
 //             path="/user/orders/:orderId"
 //             element={
-//               <ProtectedRoute>
+//               <ProtectedRoute role="user">
 //                 <UserOrderDetailPage />
 //               </ProtectedRoute>
 //             }
@@ -102,7 +116,7 @@
 //           <Route
 //             path="/user/wishlist"
 //             element={
-//               <ProtectedRoute>
+//               <ProtectedRoute role="user">
 //                 <UserWishlistPage />
 //               </ProtectedRoute>
 //             }
@@ -110,17 +124,8 @@
 //           <Route
 //             path="/user/setting"
 //             element={
-//               <ProtectedRoute>
-//                 <UserSettingsPage />
-//               </ProtectedRoute>
-//             }
-//           />
-
-//           <Route
-//             path="/user/cart"
-//             element={
 //               <ProtectedRoute role="user">
-//                 <UserCartPage />
+//                 <UserSettingsPage />
 //               </ProtectedRoute>
 //             }
 //           />
@@ -133,7 +138,7 @@
 //             }
 //           />
 
-//           {/* Admin Routes */}
+//           {/* ADMIN */}
 //           <Route
 //             path="/admin"
 //             element={
@@ -145,7 +150,7 @@
 //             <Route index element={<DashboardHome />} />
 //             <Route path="dashboard" element={<DashboardHome />} />
 //             <Route path="products" element={<AdminProductManagement />} />
-//             <Route path="users" element={<AdminuserPage />} />
+//             <Route path="users" element={<AdminUserPage />} />
 //             <Route path="carts" element={<AdminCartPage />} />
 //             <Route path="revenue" element={<RevenueCard />} />
 //             <Route path="active-users" element={<ActiveUsers />} />
@@ -153,13 +158,13 @@
 //             <Route path="settings" element={<AdminSettings />} />
 //           </Route>
 
-//           {/* Error Pages */}
+//           {/* ERROR */}
 //           <Route path="/server-error" element={<ServerError />} />
 //           <Route path="*" element={<NotFound />} />
 //         </Routes>
 //       </main>
 
-//       {/* Footer only for non-admin routes */}
+//       {/* FOOTER */}
 //       {!isAdminRoute && <Footer />}
 //     </div>
 //   );
@@ -174,9 +179,11 @@ import Sidebar from "./Component/Sidebar";
 import Header from "./Component/Header";
 import Footer from "./Component/Footer";
 
+/* ── Route Guards ─────────────────────────────────────── */
 import ProtectedRoute from "./Admin/Protectedcomponent";
+import ProtectedAdminRoute from "./Admin/Protectedcomponent";
 
-/* ================= PUBLIC PAGES ================= */
+/* ── Public Pages ─────────────────────────────────────── */
 import Product from "./Pages/Product";
 import ProductPage from "./Pages/ProductPage";
 import UserCartPage from "./Pages/Cart";
@@ -185,7 +192,8 @@ import Signin from "./Pages/Sign";
 import NotFound from "./Component/Errorpage";
 import ServerError from "./Component/ServerError";
 
-/* ================= ADMIN ================= */
+/* ── Admin Pages ──────────────────────────────────────── */
+// import AdminLogin from "./Admin/AdminLogin";
 import Admin from "./Admin/Admin";
 import DashboardHome from "./Admin/Dashboard";
 import AdminUserPage from "./Admin/Userpage";
@@ -196,7 +204,7 @@ import ActiveUsers from "./Admin component/ActiveUserComponent";
 import AdminSettings from "./AdminSettinngComponent/AdminSetting";
 import AdminOrdersPage from "./Admin/AdminOrderspage";
 
-/* ================= USER ================= */
+/* ── User Pages ───────────────────────────────────────── */
 import UserPage from "./Pages/User";
 import UserOrdersPage from "./Pages/UserOrder";
 import UserWishlistPage from "./Pages/WishList";
@@ -217,34 +225,36 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+    <div className="min-h-screen bg-linear-to-br from-[#fff1f7] via-[#fff8fb] to-[#ffe8f1] dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+      {/* Background glow */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-pink-300/20 blur-3xl rounded-full" />
+        <div className="absolute top-1/2 right-0 w-md h-112 bg-rose-300/20 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 left-1/3 w-120 h-120 bg-pink-200/20 blur-3xl rounded-full" />
+      </div>
 
-      {/* ================= USER LAYOUT ================= */}
+      {/* User layout shell (sidebar + header) */}
       {!isAdminRoute && (
         <>
           <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-
           <div
-            className={`transition-all duration-300 ${
-              sidebarOpen ? "ml-64" : "ml-0"
-            }`}
+            className={`transition-all duration-300 relative z-10 ${sidebarOpen ? "ml-64" : "ml-0"}`}
           >
             <Header open={sidebarOpen} setOpen={setSidebarOpen} />
           </div>
         </>
       )}
 
-      {/* ================= MAIN CONTENT ================= */}
-      <main className={!isAdminRoute ? "p-4" : ""}>
+      {/* Main content */}
+      <main className={`relative z-10 ${!isAdminRoute ? "p-4" : ""}`}>
         <Routes>
-
-          {/* ================= PUBLIC ROUTES ================= */}
-          <Route path="/signin" element={<Signin />} />
+          {/* ── PUBLIC ──────────────────────────────────── */}
           <Route path="/" element={<Product />} />
+          <Route path="/signin" element={<Signin />} />
           <Route path="/products/:id" element={<ProductPage />} />
           <Route path="/cart" element={<UserCartPage />} />
 
-          {/* ================= USER ROUTES ================= */}
+          {/* ── USER (protected) ────────────────────────── */}
           <Route
             path="/user/*"
             element={
@@ -294,57 +304,35 @@ function App() {
             }
           />
 
-          {/* ================= ADMIN ROUTES (FIXED) ================= */}
-          {/*
-            KEY FIX:
-            1. path="/admin" (NOT "/admin/*")
-            2. All child routes are NESTED inside this Route
-            3. <Outlet /> in Admin.jsx will now render these child components
-          */}
+          {/* ── ADMIN LOGIN (public) ─────────────────────── */}
+          {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+
+          {/* ── ADMIN (protected) ───────────────────────── */}
           <Route
             path="/admin"
             element={
-              <ProtectedRoute role="admin">
+              <ProtectedAdminRoute>
                 <Admin />
-              </ProtectedRoute>
+              </ProtectedAdminRoute>
             }
           >
-            {/* Default: /admin → DashboardHome */}
             <Route index element={<DashboardHome />} />
-
-            {/* /admin/dashboard */}
             <Route path="dashboard" element={<DashboardHome />} />
-
-            {/* /admin/products */}
             <Route path="products" element={<AdminProductManagement />} />
-
-            {/* /admin/users */}
             <Route path="users" element={<AdminUserPage />} />
-
-            {/* /admin/carts */}
             <Route path="carts" element={<AdminCartPage />} />
-
-            {/* /admin/revenue */}
             <Route path="revenue" element={<RevenueCard />} />
-
-            {/* /admin/active-users */}
             <Route path="active-users" element={<ActiveUsers />} />
-
-            {/* /admin/orders */}
             <Route path="orders" element={<AdminOrdersPage />} />
-
-            {/* /admin/settings */}
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
-          {/* ================= ERROR ROUTES ================= */}
+          {/* ── ERRORS ──────────────────────────────────── */}
           <Route path="/server-error" element={<ServerError />} />
           <Route path="*" element={<NotFound />} />
-
         </Routes>
       </main>
 
-      {/* ================= FOOTER ================= */}
       {!isAdminRoute && <Footer />}
     </div>
   );

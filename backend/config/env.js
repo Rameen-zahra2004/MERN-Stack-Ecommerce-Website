@@ -11,9 +11,7 @@ ENV HELPERS
 const required = (key) => {
   const value = process.env[key];
   if (!value) {
-    throw new Error(
-      `❌ Missing environment variable: ${key}`
-    );
+    throw new Error(`❌ Missing environment variable: ${key}`);
   }
   return value;
 };
@@ -35,9 +33,7 @@ const env = {
   CORE
   =========================
   */
-  NODE_ENV:
-    process.env.NODE_ENV ||
-    "development",
+  NODE_ENV: process.env.NODE_ENV || "development",
 
   PORT: toNumber(process.env.PORT, 5000),
 
@@ -52,61 +48,45 @@ const env = {
   */
   JWT_SECRET: required("JWT_SECRET"),
 
-  JWT_EXPIRES_IN:
-    process.env.JWT_EXPIRES_IN ||
-    "7d",
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || "7d",
 
-  JWT_REFRESH_SECRET: required(
-    "JWT_REFRESH_SECRET"
-  ),
+  JWT_ACCESS_SECRET: required("JWT_ACCESS_SECRET"),
 
-  JWT_REFRESH_EXPIRES_IN:
-    process.env
-      .JWT_REFRESH_EXPIRES_IN ||
-    "30d",
+  JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN || "15m",
+
+  JWT_REFRESH_SECRET: required("JWT_REFRESH_SECRET"),
+
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN || "30d",
 
   /*
   =========================
   COOKIE
   =========================
   */
-  COOKIE_SECRET: required(
-    "COOKIE_SECRET"
-  ),
+  COOKIE_SECRET: required("COOKIE_SECRET"),
 
-  COOKIE_EXPIRES_IN:
-    process.env.COOKIE_EXPIRES_IN ||
-    "7d",
+  COOKIE_EXPIRES_IN: process.env.COOKIE_EXPIRES_IN || "7d",
 
   /*
   =========================
   SECURITY
   =========================
   */
-  BCRYPT_SALT_ROUNDS: toNumber(
-    process.env.BCRYPT_SALT_ROUNDS,
-    10
-  ),
+  BCRYPT_SALT_ROUNDS: toNumber(process.env.BCRYPT_SALT_ROUNDS, 10),
 
   RATE_LIMIT_WINDOW_MS: toNumber(
-    process.env
-      .RATE_LIMIT_WINDOW_MS,
-    15 * 60 * 1000
+    process.env.RATE_LIMIT_WINDOW_MS,
+    15 * 60 * 1000,
   ),
 
-  RATE_LIMIT_MAX_REQUESTS: toNumber(
-    process.env
-      .RATE_LIMIT_MAX_REQUESTS,
-    100
-  ),
+  RATE_LIMIT_MAX_REQUESTS: toNumber(process.env.RATE_LIMIT_MAX_REQUESTS, 100),
 
   /*
   =========================
   CORS
   =========================
   */
-  CORS_ORIGIN:
-    process.env.CORS_ORIGIN || "*",
+  CORS_ORIGIN: process.env.CORS_ORIGIN || "*",
 };
 
 export default env;

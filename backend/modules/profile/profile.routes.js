@@ -1,7 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
+import { protect } from "../auth/auth.middleware.js";
 
 import {
   addAddressController,
@@ -12,7 +11,7 @@ import {
 
 const router = express.Router();
 
-router.use(authenticate);
+router.use(protect);
 
 /*
 =========================
@@ -20,24 +19,12 @@ PROFILE ROUTES
 =========================
 */
 
-router.get(
-  "/",
-  getProfileController
-);
+router.get("/", getProfileController);
 
-router.put(
-  "/",
-  updateProfileController
-);
+router.put("/", updateProfileController);
 
-router.post(
-  "/address",
-  addAddressController
-);
+router.post("/address", addAddressController);
 
-router.delete(
-  "/address/:addressId",
-  deleteAddressController
-);
+router.delete("/address/:addressId", deleteAddressController);
 
 export default router;

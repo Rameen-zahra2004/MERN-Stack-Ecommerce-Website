@@ -1,6 +1,5 @@
 // import {
 //   FiMenu,
-//   FiSearch,
 //   FiShoppingBag,
 //   FiShoppingCart,
 //   FiUser,
@@ -14,84 +13,102 @@
 // export default function Header({ open, setOpen }) {
 //   const dispatch = useDispatch();
 //   const { user } = useSelector((state) => state.signinuser);
+//   const cartCount = useSelector((state) => state.cart?.items?.length ?? 0);
 
 //   return (
-//     <header
-//       className={`flex items-center justify-between bg-white px-4 py-3 border-b transition-all duration-300 ${
-//         open ? "pl-6" : "pl-4"
-//       }`}
-//     >
-//       <div className="flex items-center gap-3 w-full">
+//     <header className="sticky top-0 z-50 flex items-center justify-between gap-5 h-18 px-6 bg-white/85 backdrop-blur-xl border-b border-pink-100/60 shadow-[0_4px_20px_rgba(236,72,153,0.08)]">
+//       {/* Left — menu + logo */}
+//       <div className="flex items-center gap-4 shrink-0">
 //         <button
 //           onClick={() => setOpen(!open)}
-//           className="p-2 rounded-md hover:bg-gray-100"
+//           className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-pink-100 shadow-sm hover:shadow-md hover:border-pink-300 hover:bg-pink-50 transition-all duration-300"
 //         >
-//           {open ? <FiX size={20} /> : <FiMenu size={20} />}
+//           {open ? (
+//             <FiX size={18} className="text-pink-500" />
+//           ) : (
+//             <FiMenu size={18} className="text-pink-500" />
+//           )}
 //         </button>
 
-//        <div className="flex items-center gap-2.5">
-//   <div className="w-8 h-8 rounded-lg bg-[#534AB7] flex items-center justify-center">
-//     <span className="text-white text-base font-medium">N</span>
-//   </div>
-//   <span className="text-[22px] font-medium tracking-tight">
-//     Nova<span className="text-[#534AB7]">Mart</span>
-//   </span>
-// </div>
+//         <Link to="/" className="flex items-center gap-3 group">
+//           <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-pink-400 via-pink-500 to-rose-600 flex items-center justify-center shrink-0 shadow-lg shadow-pink-300/40 ring-2 ring-white group-hover:scale-105 transition-transform duration-300">
+//             <span className="text-white text-sm font-bold">999</span>
+//           </div>
 
-//         <Searchbar />
+//           <div className="flex flex-col leading-none">
+//             <span className="text-xl font-bold tracking-tight text-gray-900">
+//               THE 999 <span className="text-pink-600">BOXS</span>
+//             </span>
 
-//         <nav className="flex items-center gap-4">
-//           <Link
-//             to="/"
-//             className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100"
-//           >
-//             <FiShoppingBag />
-//             <span className="hidden md:inline">Products</span>
-//           </Link>
-
-//           {!user ? (
-//             <Link
-//               to="/signin"
-//               className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 text-black font-medium"
-//             >
-//               <FiUser />
-//               <span className="hidden md:inline">Sign In</span>
-//             </Link>
-//           ) : (
-//             <button
-//               onClick={() => dispatch(logOut())}
-//               className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 text-red-500 font-medium"
-//             >
-//               <FiX />
-//               <span className="hidden md:inline">Logout</span>
-//             </button>
-//           )}
-
-//           {user?.role === "admin" && (
-//             <Link
-//               to="/admin"
-//               className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 text-black font-medium"
-//             >
-//               <FiUser />
-//               <span className="hidden md:inline">Admin</span>
-//             </Link>
-//           )}
-
-//           <Link
-//             to="/cart"
-//             className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 text-black font-medium"
-//           >
-//             <FiShoppingCart />
-//             <span>Cart</span>
-//           </Link>
-//         </nav>
+//             <span className="text-[10px] uppercase tracking-[0.22em] text-pink-500 font-semibold">
+//               Curated Finds
+//             </span>
+//           </div>
+//         </Link>
 //       </div>
+
+//       {/* Center — search */}
+//       <div className="flex-1 max-w-150 hidden md:block">
+//         <Searchbar />
+//       </div>
+
+//       {/* Right — nav */}
+//       <nav className="flex items-center gap-1 shrink-0">
+//         <Link
+//           to="/"
+//           className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all duration-300"
+//         >
+//           <FiShoppingBag size={18} />
+//           <span className="hidden md:inline">Products</span>
+//         </Link>
+
+//         {!user ? (
+//           <Link
+//             to="/signin"
+//             className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all duration-300"
+//           >
+//             <FiUser size={18} />
+//             <span className="hidden md:inline">Sign In</span>
+//           </Link>
+//         ) : (
+//           <button
+//             onClick={() => dispatch(logOut())}
+//             className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-all duration-300"
+//           >
+//             <FiX size={18} />
+//             <span className="hidden md:inline">Logout</span>
+//           </button>
+//         )}
+
+//         {user?.role === "admin" && (
+//           <Link
+//             to="/admin"
+//             className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all duration-300"
+//           >
+//             <FiUser size={18} />
+//             <span className="hidden md:inline">Admin</span>
+//           </Link>
+//         )}
+
+//         <Link
+//           to="/cart"
+//           className="relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all duration-300"
+//         >
+//           <FiShoppingCart size={18} />
+//           <span className="hidden md:inline">Cart</span>
+
+//           {cartCount > 0 && (
+//             <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-linear-to-br  from-pink-500 to-rose-600 text-white text-[10px] font-bold flex items-center justify-center shadow-lg ring-2 ring-white animate-pulse">
+//               {cartCount}
+//             </span>
+//           )}
+//         </Link>
+//       </nav>
 //     </header>
 //   );
 // }
 import {
   FiMenu,
-  FiSearch,
   FiShoppingBag,
   FiShoppingCart,
   FiUser,
@@ -108,56 +125,101 @@ export default function Header({ open, setOpen }) {
   const cartCount = useSelector((state) => state.cart?.items?.length ?? 0);
 
   return (
-    <header className="flex items-center justify-between bg-white border-b border-gray-100 px-5 h-15  gap-4 sticky top-0 z-50">
-
-      {/* Left — menu + logo */}
-      <div className="flex items-center gap-3 shrink-0">
+    <header
+      className="sticky top-0 z-50 flex items-center justify-between gap-5 h-18 px-6
+      bg-linear-to-r from-[#fff1f7] via-[#fff8fb] to-[#ffe8f1]
+      backdrop-blur-2xl
+      border-b border-pink-200/50
+      shadow-[0_8px_30px_rgba(236,72,153,0.12)]"
+    >
+      {/* LEFT */}
+      <div className="flex items-center gap-4 shrink-0">
         <button
           onClick={() => setOpen(!open)}
-          className="w-8.5 h-8.5 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+          className="w-10 h-10 flex items-center justify-center rounded-xl
+          bg-white/70 backdrop-blur-md
+          border border-pink-200/50
+          shadow-[0_4px_15px_rgba(236,72,153,0.08)]
+          hover:bg-pink-50
+          hover:border-pink-300
+          hover:shadow-[0_6px_20px_rgba(236,72,153,0.18)]
+          transition-all duration-300"
         >
-          {open ? <FiX size={18} className="text-gray-500" /> : <FiMenu size={18} className="text-gray-500" />}
+          {open ? (
+            <FiX size={18} className="text-[#e11d74]" />
+          ) : (
+            <FiMenu size={18} className="text-[#e11d74]" />
+          )}
         </button>
 
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#534AB7] flex items-center justify-center shrink-0">
-            <span className="text-white text-[15px] font-medium">N</span>
+        <Link to="/" className="flex items-center gap-3 group">
+          <div
+            className="w-11 h-11 rounded-2xl
+            bg-linear-to-br from-[#ff7eb3] via-[#ff4fa0] to-[#e11d74]
+            flex items-center justify-center shrink-0
+            shadow-[0_10px_25px_rgba(255,79,160,0.35)]
+            ring-2 ring-white
+            group-hover:scale-105 transition-transform duration-300"
+          >
+            <span className="text-white text-sm font-bold">999</span>
           </div>
-          <span className="text-[20px] font-medium tracking-tight leading-none">
-            Nova<span className="text-[#534AB7]">Mart</span>
-          </span>
-        </div>
+
+          <div className="flex flex-col leading-none">
+            <span className="text-xl font-extrabold tracking-tight text-gray-800">
+              THE 999 <span className="text-[#e11d74]">BOXS</span>
+            </span>
+
+            <span className="text-[10px] uppercase tracking-[0.25em] text-[#ff4fa0] font-semibold">
+              Curated Finds
+            </span>
+          </div>
+        </Link>
       </div>
 
-      {/* Center — search */}
-      <div className="flex-1 "max-w-95>
+      {/* CENTER */}
+      <div className="flex-1 max-w-150 hidden md:block">
         <Searchbar />
       </div>
 
-      {/* Right — nav */}
+      {/* RIGHT */}
       <nav className="flex items-center gap-1 shrink-0">
         <Link
           to="/"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
+          text-gray-700
+          hover:bg-white/80
+          hover:text-[#e11d74]
+          hover:shadow-md
+          transition-all duration-300"
         >
-          <FiShoppingBag size={17} />
+          <FiShoppingBag size={18} />
           <span className="hidden md:inline">Products</span>
         </Link>
 
         {!user ? (
           <Link
             to="/signin"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
+            text-gray-700
+            hover:bg-white/80
+            hover:text-[#e11d74]
+            hover:shadow-md
+            transition-all duration-300"
           >
-            <FiUser size={17} />
-            <span className="hidden md:inline">Sign in</span>
+            <FiUser size={18} />
+            <span className="hidden md:inline">Sign In</span>
           </Link>
         ) : (
           <button
             onClick={() => dispatch(logOut())}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
+            text-rose-500
+            hover:bg-rose-50
+            hover:text-rose-600
+            hover:shadow-md
+            transition-all duration-300"
           >
-            <FiX size={17} />
+            <FiX size={18} />
             <span className="hidden md:inline">Logout</span>
           </button>
         )}
@@ -165,21 +227,39 @@ export default function Header({ open, setOpen }) {
         {user?.role === "admin" && (
           <Link
             to="/admin"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
+            text-gray-700
+            hover:bg-white/80
+            hover:text-[#e11d74]
+            hover:shadow-md
+            transition-all duration-300"
           >
-            <FiUser size={17} />
+            <FiUser size={18} />
             <span className="hidden md:inline">Admin</span>
           </Link>
         )}
 
         <Link
           to="/cart"
-          className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+          className="relative flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium
+          text-gray-700
+          hover:bg-white/80
+          hover:text-[#e11d74]
+          hover:shadow-md
+          transition-all duration-300"
         >
-          <FiShoppingCart size={17} />
+          <FiShoppingCart size={18} />
           <span className="hidden md:inline">Cart</span>
+
           {cartCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#534AB7] text-white text-[10px] font-medium flex items-center justify-center">
+            <span
+              className="absolute -top-1 -right-1 w-5 h-5 rounded-full
+            bg-linear-to-br from-[#ff4fa0] to-[#e11d74]
+            text-white text-[10px] font-bold
+            flex items-center justify-center
+            shadow-[0_6px_15px_rgba(255,79,160,0.45)]
+            ring-2 ring-white animate-pulse"
+            >
               {cartCount}
             </span>
           )}

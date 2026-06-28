@@ -11,21 +11,12 @@ export {
   createApiKeyService,
   deleteApiKeyService,
   validateApiKeyService,
-} from "./apiKey.service.js";
+} from "./apiKeys.service.js";
 
-export {
-  createApiKeyValidation,
-} from "./apiKey.validation.js";
+export { createApiKeyValidation } from "./apiKey.validation.js";
 
-export {
-  API_KEY_MESSAGES,
-} from "./apiKey.constants.js";
+export { API_KEY_MESSAGES } from "./apiKey.constants.js";
 
-export {
-  generateApiKey,
-  hashApiKey,
-} from "./apiKey.utils.js";
+export { generateApiKey, hashApiKey } from "./apiKey.utils.js";
 
-export {
-  default as apiKeyAuth,
-} from "./apiKey.middleware.js";
+export { default as apiKeyAuth } from "./apiKey.middleware.js";

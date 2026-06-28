@@ -1,57 +1,58 @@
+// import { useEffect } from "react";
 // import { Navigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
+// import { getAdminProfile } from "../AdminSlices/adminLoginSlice";
 
-// export default function ProtectedRoute({ children, role }) {
-//   const { user } = useSelector((state) => state.signinuser);
+// export default function ProtectedAdminRoute({ children }) {
+//   const dispatch = useDispatch();
+//   const { admin, isAuthenticated, loading } = useSelector(
+//     (state) => state.adminLogin,
+//   );
 
-//   const storedUser = localStorage.getItem("currentUser");
-//   const currentUser = user || (storedUser ? JSON.parse(storedUser) : null);
+//   // ── On mount: rehydrate admin session from cookie ──────
+//   useEffect(() => {
+//     if (!isAuthenticated && !admin) {
+//       dispatch(getAdminProfile());
+//     }
+//   }, []);
 
-//   // Not logged in → redirect to signin
-//   if (!currentUser) {
-//     return <Navigate to="/signin" replace />;
+//   // ── Still checking session ─────────────────────────────
+//   if (loading) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <p className="text-gray-500 text-sm">Checking session...</p>
+//       </div>
+//     );
 //   }
 
-//   // Role mismatch → redirect to home
-//   if (role && currentUser.role !== role) {
-//     return <Navigate to="/" replace />;
+//   // ── Not authenticated → go to admin login ──────────────
+//   if (!isAuthenticated) {
+//     return <Navigate to="/admin/login" replace />;
 //   }
 
-//   // Access granted
+//   // ── Authenticated → render page ────────────────────────
 //   return children;
 // }
-import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-export default function ProtectedRoute({ children, role }) {
-  const { user } = useSelector((state) => state.signinuser);
+export default function ProtectedAdminRoute({ children }) {
+  const { user, loading } = useSelector((state) => state.signinuser);
 
-  const storedUser = localStorage.getItem("currentUser");
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-500 text-sm">Checking session...</p>
+      </div>
+    );
+  }
 
-  const currentUser =
-    user || (storedUser ? JSON.parse(storedUser) : null);
+  const role = user?.role?.toLowerCase();
+  const ADMIN_ROLES = new Set(["admin", "super_admin", "moderator"]);
 
-  // =========================
-  // ❌ NOT LOGGED IN
-  // =========================
-  if (!currentUser) {
+  if (!user || !ADMIN_ROLES.has(role)) {
     return <Navigate to="/signin" replace />;
   }
 
-  // =========================
-  // ❌ ROLE NOT ALLOWED
-  // =========================
-  if (role && currentUser.role !== role) {
-    // redirect based on actual role
-    if (currentUser.role === "admin") {
-      return <Navigate to="/admin" replace />;
-    }
-
-    return <Navigate to="/user" replace />;
-  }
-
-  // =========================
-  // ✅ ACCESS GRANTED
-  // =========================
   return children;
 }

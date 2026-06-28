@@ -1,8 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
-
+import { protect } from "../auth/auth.middleware.js";
 import {
   cancelOrderController,
   createOrderController,
@@ -12,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.use(authenticate);
+router.use(protect);
 
 /*
 =========================
@@ -20,24 +18,12 @@ ORDER ROUTES
 =========================
 */
 
-router.post(
-  "/",
-  createOrderController
-);
+router.post("/", createOrderController);
 
-router.get(
-  "/",
-  getOrdersController
-);
+router.get("/", getOrdersController);
 
-router.get(
-  "/:id",
-  getSingleOrderController
-);
+router.get("/:id", getSingleOrderController);
 
-router.patch(
-  "/:id/cancel",
-  cancelOrderController
-);
+router.patch("/:id/cancel", cancelOrderController);
 
 export default router;

@@ -156,6 +156,7 @@
 
 // export default connectDB;
 import mongoose from "mongoose";
+import env from "./env.js";
 
 /*
 =========================
@@ -164,7 +165,7 @@ MONGODB OPTIONS
 */
 
 const mongoOptions = {
-  autoIndex: process.env.NODE_ENV !== "production",
+  autoIndex: env.NODE_ENV !== "production",
   serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
   family: 4,
@@ -176,10 +177,10 @@ GLOBAL CACHE (PERSISTS ACROSS SERVERLESS INVOCATIONS)
 =========================
 */
 
-let cached = global._mongoose;
+let cached = globalThis._mongoose;
 
 if (!cached) {
-  cached = global._mongoose = {
+  cached = globalThis._mongoose = {
     conn: null,
     promise: null,
   };
@@ -208,18 +209,15 @@ const connectDB = async () => {
       console.log("🔄 Connecting to MongoDB...");
 
       cached.promise = mongoose
-        .connect(process.env.MONGO_URI, mongoOptions)
+        .connect(env.MONGO_URI, mongoOptions)
         .then((mongoose) => {
-          console.log(
-            `✅ MongoDB Connected: ${mongoose.connection.host}`
-          );
+          console.log(`✅ MongoDB Connected: ${mongoose.connection.host}`);
           return mongoose;
         });
     }
 
     cached.conn = await cached.promise;
     return cached.conn;
-
   } catch (error) {
     /*
     RESET CACHE ON FAILURE SO NEXT REQUEST RETRIES

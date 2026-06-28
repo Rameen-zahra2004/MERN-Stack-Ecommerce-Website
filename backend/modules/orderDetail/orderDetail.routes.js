@@ -1,8 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
-
+import { protect } from "../auth/auth.middleware.js";
 import {
   getOrderDetailsController,
   getUserOrderDetailsController,
@@ -16,7 +14,7 @@ MIDDLEWARE
 =========================
 */
 
-router.use(authenticate);
+router.use(protect);
 
 /*
 =========================
@@ -24,14 +22,8 @@ ROUTES
 =========================
 */
 
-router.get(
-  "/order/:orderId",
-  getOrderDetailsController
-);
+router.get("/order/:orderId", getOrderDetailsController);
 
-router.get(
-  "/me",
-  getUserOrderDetailsController
-);
+router.get("/me", getUserOrderDetailsController);
 
 export default router;

@@ -1,8 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
-
+import { protect } from "../auth/auth.middleware.js";
 import {
   addToCartController,
   clearCartController,
@@ -19,31 +17,16 @@ CART ROUTES
 =========================
 */
 
-router.use(authenticate);
+router.use(protect);
 
-router.get(
-  "/",
-  getCartController
-);
+router.get("/", getCartController);
 
-router.post(
-  "/",
-  addToCartController
-);
+router.post("/", addToCartController);
 
-router.put(
-  "/:productId",
-  updateCartItemController
-);
+router.put("/:productId", updateCartItemController);
 
-router.delete(
-  "/:productId",
-  removeCartItemController
-);
+router.delete("/:productId", removeCartItemController);
 
-router.delete(
-  "/",
-  clearCartController
-);
+router.delete("/", clearCartController);
 
 export default router;

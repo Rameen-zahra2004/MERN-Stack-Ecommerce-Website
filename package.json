@@ -1,5 +1,5 @@
 {
-  "name": "practice-project",
+  "name": "🎁 THE 999 BOX",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",
+    "@paypal/react-paypal-js": "^10.0.0",
     "@reduxjs/toolkit": "^2.9.2",
     "@stripe/react-stripe-js": "^6.4.0",
     "@stripe/stripe-js": "^9.6.0",
@@ -24,10 +25,12 @@
     "emoji-picker-react": "^4.15.0",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
+    "file-type": "^22.0.1",
     "framer-motion": "^12.23.24",
     "json-server": "^1.0.0-beta.3",
     "jsonwebtoken": "^9.0.2",
     "lowdb": "^7.0.1",
+    "multer": "^2.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",

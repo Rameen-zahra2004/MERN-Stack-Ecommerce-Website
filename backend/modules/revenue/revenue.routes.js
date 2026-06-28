@@ -1,8 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
-
+import { protect } from "../auth/auth.middleware.js";
 import {
   getRevenueController,
   createRevenueSnapshotController,
@@ -16,16 +14,8 @@ ADMIN ONLY (YOU SHOULD ADD ROLE CHECK LATER)
 =========================
 */
 
-router.get(
-  "/",
-  authenticate,
-  getRevenueController
-);
+router.get("/", protect, getRevenueController);
 
-router.post(
-  "/snapshot",
-  authenticate,
-  createRevenueSnapshotController
-);
+router.post("/snapshot", protect, createRevenueSnapshotController);
 
 export default router;

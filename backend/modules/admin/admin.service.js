@@ -1,134 +1,198 @@
-import Admin from "./admin.model.js";
-
+import Admin from "./Admin.model.js";
+import { ADMIN_MESSAGES } from "./admin.constants.js";
 import {
-  ADMIN_MESSAGES,
-} from "./admin.constants.js";
+  generateAccessToken,
+  generateRefreshToken,
+  hashToken,
+  attachAuthCookies,
+  clearAuthCookies,
+} from "../auth/authUtils.js";
 
-/*
-=========================
-GET ADMINS
-=========================
-*/
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
-export const getAdminsService =
-  async ({
-    page = 1,
-    limit = 20,
-  }) => {
-    const skip = (page - 1) * limit;
+/* ===================== GET ADMINS ===================== */
 
-    const [data, total] =
-      await Promise.all([
-        Admin.find()
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(limit)
-          .lean(),
+export const getAdminsService = async ({ page = 1, limit = 20 }) => {
+  const skip = (page - 1) * limit;
 
-        Admin.countDocuments(),
-      ]);
+  const [data, total] = await Promise.all([
+    Admin.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    Admin.countDocuments(),
+  ]);
 
-    return {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(
-        total / limit
-      ),
-      data,
-    };
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    data,
+  };
+};
+
+/* ===================== GET SINGLE ADMIN ===================== */
+
+export const getSingleAdminService = async (id) => {
+  const admin = await Admin.findById(id).lean();
+  if (!admin) {
+    const error = new Error(ADMIN_MESSAGES.NOT_FOUND);
+    error.statusCode = 404;
+    throw error;
+  }
+  return admin;
+};
+
+/* ===================== CREATE ADMIN ===================== */
+
+export const createAdminService = async (payload) => {
+  const existingAdmin = await Admin.findOne({ email: payload.email });
+  if (existingAdmin) {
+    const error = new Error(ADMIN_MESSAGES.EMAIL_EXISTS);
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const admin = await Admin.create(payload);
+  return admin;
+};
+
+/* ===================== UPDATE ADMIN ===================== */
+
+export const updateAdminService = async (id, payload) => {
+  const admin = await Admin.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!admin) {
+    const error = new Error(ADMIN_MESSAGES.NOT_FOUND);
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return admin;
+};
+
+/* ===================== DELETE ADMIN ===================== */
+
+export const deleteAdminService = async (id) => {
+  const admin = await Admin.findByIdAndDelete(id);
+  if (!admin) {
+    const error = new Error(ADMIN_MESSAGES.NOT_FOUND);
+    error.statusCode = 404;
+    throw error;
+  }
+  return admin;
+};
+
+/* ===================== LOGIN ADMIN ===================== */
+
+export const loginAdminService = async (res, { email, password }) => {
+  const admin = await Admin.findOne({ email }).select(
+    "+password +refreshToken",
+  );
+
+  const invalidCredentialsError = () => {
+    const e = new Error("Invalid email or password.");
+    e.statusCode = 401;
+    return e;
   };
 
-/*
-=========================
-GET SINGLE ADMIN
-=========================
-*/
+  if (!admin) throw invalidCredentialsError();
 
-export const getSingleAdminService =
-  async (id) => {
-    const admin =
-      await Admin.findById(id).lean();
+  if (admin.lockUntil && admin.lockUntil > Date.now()) {
+    const error = new Error(
+      "Account temporarily locked due to too many failed attempts. Try again later.",
+    );
+    error.statusCode = 423;
+    throw error;
+  }
 
-    if (!admin) {
-      throw new Error(
-        ADMIN_MESSAGES.NOT_FOUND
-      );
+  const isMatch = await admin.comparePassword(password);
+
+  if (!isMatch) {
+    admin.loginAttempts = (admin.loginAttempts || 0) + 1;
+
+    if (admin.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+      admin.lockUntil = new Date(Date.now() + LOCK_DURATION_MS);
+      admin.loginAttempts = 0;
     }
 
-    return admin;
+    await admin.save({ validateBeforeSave: false });
+    throw invalidCredentialsError();
+  }
+
+  if (!admin.isActive) {
+    const error = new Error("Admin account has been deactivated.");
+    error.statusCode = 403;
+    error.code = "ACCOUNT_SUSPENDED";
+    throw error;
+  }
+
+  admin.loginAttempts = 0;
+  admin.lockUntil = null;
+
+  const tokenPayload = {
+    id: admin._id,
+    role: admin.role,
+    permissions: admin.permissions,
   };
 
-/*
-=========================
-CREATE ADMIN
-=========================
-*/
+  const accessToken = generateAccessToken(tokenPayload);
+  const refreshToken = generateRefreshToken(tokenPayload);
 
-export const createAdminService =
-  async (payload) => {
-    const existingAdmin =
-      await Admin.findOne({
-        email: payload.email,
-      });
+  admin.refreshToken = hashToken(refreshToken);
+  admin.lastLogin = new Date();
+  await admin.save({ validateBeforeSave: false });
 
-    if (existingAdmin) {
-      throw new Error(
-        ADMIN_MESSAGES.EMAIL_EXISTS
-      );
-    }
+  attachAuthCookies(res, {
+    accessToken,
+    refreshToken,
+    accessCookieName: "adminAccessToken",
+    refreshCookieName: "adminRefreshToken",
+  });
 
-    const admin =
-      await Admin.create(payload);
-
-    return admin;
+  return {
+    id: admin._id,
+    name: admin.name,
+    email: admin.email,
+    role: admin.role,
+    permissions: admin.permissions,
   };
+};
 
-/*
-=========================
-UPDATE ADMIN
-=========================
-*/
+/* ===================== LOGOUT ADMIN ===================== */
 
-export const updateAdminService =
-  async (id, payload) => {
-    const admin =
-      await Admin.findByIdAndUpdate(
-        id,
-        payload,
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+export const logoutAdminService = async (res, adminId) => {
+  if (adminId) {
+    await Admin.findByIdAndUpdate(adminId, { $unset: { refreshToken: "" } });
+  }
+  clearAuthCookies(res, {
+    accessCookieName: "adminAccessToken",
+    refreshCookieName: "adminRefreshToken",
+  });
+};
 
-    if (!admin) {
-      throw new Error(
-        ADMIN_MESSAGES.NOT_FOUND
-      );
-    }
+/* ===================== ONE-TIME BOOTSTRAP ===================== */
 
-    return admin;
-  };
+export const seedFirstSuperAdmin = async ({ name, email, password }) => {
+  const existingCount = await Admin.countDocuments();
 
-/*
-=========================
-DELETE ADMIN
-=========================
-*/
+  if (existingCount > 0) {
+    const error = new Error(
+      "Refused: at least one Admin already exists. Bootstrap only runs on an empty collection.",
+    );
+    error.statusCode = 409;
+    throw error;
+  }
 
-export const deleteAdminService =
-  async (id) => {
-    const admin =
-      await Admin.findByIdAndDelete(
-        id
-      );
+  const admin = await Admin.create({
+    name,
+    email,
+    password,
+    role: "SUPER_ADMIN",
+    permissions: [],
+  });
 
-    if (!admin) {
-      throw new Error(
-        ADMIN_MESSAGES.NOT_FOUND
-      );
-    }
-
-    return admin;
-  };
+  return { id: admin._id, email: admin.email, role: admin.role };
+};

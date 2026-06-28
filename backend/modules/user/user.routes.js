@@ -1,59 +1,83 @@
+// import express from "express";
+
+// import { protect } from "../auth/auth.middleware.js";
+
+// import authorizeRoles from "../roles/role.middleware.js";
+
+// import {
+//   createUserController,
+//   deleteUserController,
+//   getUserController,
+//   getUsersController,
+//   updateUserController,
+// } from "./user.controller.js";
+
+// const router = express.Router();
+
+// /*
+// =========================
+// ADMIN ROUTES
+// =========================
+// */
+
+// router.get(
+//   "/",
+//   protect,
+//   authorizeRoles("ADMIN", "SUPER_ADMIN"),
+//   getUsersController,
+// );
+
+// router.get("/:id", protect, getUserController);
+
+// router.post("/", createUserController);
+
+// router.put("/:id", protect, updateUserController);
+
+// router.delete(
+//   "/:id",
+//   protect,
+//   authorizeRoles("SUPER_ADMIN"),
+//   deleteUserController,
+// );
+
+// export default router;
+
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
+console.log("USER ROUTES: importing auth.middleware");
+const { protect } = await import("../auth/auth.middleware.js");
+console.log("USER ROUTES: auth.middleware OK");
 
-import authorizeRoles from
-  "../roles/role.middleware.js";
+console.log("USER ROUTES: importing role.middleware");
+const authorizeRoles = (await import("../roles/role.middleware.js")).default;
+console.log("USER ROUTES: role.middleware OK");
 
-import {
+console.log("USER ROUTES: importing user.controller");
+const {
   createUserController,
   deleteUserController,
   getUserController,
   getUsersController,
   updateUserController,
-} from "./user.controller.js";
+} = await import("./user.controller.js");
+console.log("USER ROUTES: user.controller OK");
 
 const router = express.Router();
 
-/*
-=========================
-ADMIN ROUTES
-=========================
-*/
-
 router.get(
   "/",
-  authenticate,
-  authorizeRoles(
-    "ADMIN",
-    "SUPER_ADMIN"
-  ),
-  getUsersController
+  protect,
+  authorizeRoles("ADMIN", "SUPER_ADMIN"),
+  getUsersController,
 );
-
-router.get(
-  "/:id",
-  authenticate,
-  getUserController
-);
-
-router.post(
-  "/",
-  createUserController
-);
-
-router.put(
-  "/:id",
-  authenticate,
-  updateUserController
-);
-
+router.get("/:id", protect, getUserController);
+router.post("/", createUserController);
+router.put("/:id", protect, updateUserController);
 router.delete(
   "/:id",
-  authenticate,
+  protect,
   authorizeRoles("SUPER_ADMIN"),
-  deleteUserController
+  deleteUserController,
 );
 
 export default router;

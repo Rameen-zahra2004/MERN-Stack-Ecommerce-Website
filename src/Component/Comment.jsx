@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addComment, addReply } from "../Slices/commentSlice";
 import Picker from "emoji-picker-react";
+import { FiSmile, FiSend, FiCornerDownRight } from "react-icons/fi";
 
 // Hook for emoji input
 function useEmojiInput(initial = "") {
@@ -17,6 +18,11 @@ function useEmojiInput(initial = "") {
   };
 
   return { value, setValue, open, toggle, onEmojiClick };
+}
+
+// Avatar initials helper
+function getInitials(name = "User") {
+  return name.trim().charAt(0).toUpperCase();
 }
 
 // MAIN COMPONENT
@@ -38,7 +44,7 @@ export default function CommentSection({ postId }) {
         postId,
         userId: user?.id ?? null,
         text: commentInput.value.trim(),
-      })
+      }),
     );
 
     commentInput.setValue("");
@@ -50,20 +56,28 @@ export default function CommentSection({ postId }) {
         commentId,
         userId: user?.id ?? null,
         text,
-      })
+      }),
     );
   };
 
   return (
-    <div className="mt-6 w-full">
-      <h2 className="text-xl font-semibold mb-3">Comments</h2>
+    <div className="mt-8 w-full max-w-2xl">
+      <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        Comments
+        <span className="text-sm font-medium text-pink-500 bg-pink-50 px-2 py-0.5 rounded-full">
+          {filteredComments.length}
+        </span>
+      </h2>
 
       {/* Input for new comment */}
-      <CommentInput
-        emoji={commentInput}
-        onSubmit={handleAddComment}
-        submitLabel="Post"
-      />
+      <div className="bg-white border border-pink-100 rounded-xl shadow-sm shadow-pink-100 p-3 mb-6">
+        <CommentInput
+          emoji={commentInput}
+          onSubmit={handleAddComment}
+          submitLabel="Post"
+          username={user?.username}
+        />
+      </div>
 
       {/* Comments List */}
       <CommentList comments={filteredComments} onAddReply={handleAddReply} />
@@ -74,10 +88,17 @@ export default function CommentSection({ postId }) {
 // COMMENTS LIST
 function CommentList({ comments, onAddReply }) {
   if (!comments.length)
-    return <p className="text-gray-500 mt-2">No comments yet. Be the first!</p>;
+    return (
+      <div className="text-center py-10 border border-dashed border-pink-200 rounded-xl bg-pink-50/40">
+        <p className="text-pink-400 font-medium">No comments yet</p>
+        <p className="text-sm text-pink-300 mt-1">
+          Be the first to share your thoughts 🌸
+        </p>
+      </div>
+    );
 
   return (
-    <div className="space-y-4 mt-2">
+    <div className="space-y-4">
       {comments.map((c) => (
         <CommentItem
           key={c.id}
@@ -92,11 +113,30 @@ function CommentList({ comments, onAddReply }) {
 
 // COMMENT ITEM
 function CommentItem({ comment, replies, onAddReply }) {
+  const username = comment.user?.username ?? "User";
+
   return (
-    <div className="border border-gray-300 rounded p-3">
-      <p>
-        <strong>{comment.user?.username ?? "User"}</strong>: {comment.text}
-      </p>
+    <div className="bg-white border border-pink-100 rounded-xl shadow-sm shadow-pink-50 p-4 hover:shadow-md hover:shadow-pink-100 transition">
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-semibold text-sm shrink-0">
+          {getInitials(username)}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-baseline gap-2">
+            <span className="font-semibold text-gray-800 text-sm">
+              {username}
+            </span>
+            {comment.createdAt && (
+              <span className="text-xs text-gray-400">
+                {new Date(comment.createdAt).toLocaleDateString()}
+              </span>
+            )}
+          </div>
+          <p className="text-gray-700 text-sm mt-1 leading-relaxed">
+            {comment.text}
+          </p>
+        </div>
+      </div>
 
       {/* Replies */}
       <ReplyList replies={replies} />
@@ -112,12 +152,23 @@ function ReplyList({ replies }) {
   if (!replies.length) return null;
 
   return (
-    <div className="ml-6 mt-3 space-y-2">
-      {replies.map((r) => (
-        <div key={r.id} className="text-gray-700 text-sm">
-          <strong>{r.user?.username ?? "User"}</strong>: {r.text}
-        </div>
-      ))}
+    <div className="ml-12 mt-3 space-y-3 border-l-2 border-pink-100 pl-4">
+      {replies.map((r) => {
+        const username = r.user?.username ?? "User";
+        return (
+          <div key={r.id} className="flex items-start gap-2">
+            <div className="w-7 h-7 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center font-semibold text-xs shrink-0">
+              {getInitials(username)}
+            </div>
+            <div>
+              <span className="font-semibold text-gray-700 text-xs">
+                {username}
+              </span>
+              <p className="text-gray-600 text-sm">{r.text}</p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -125,49 +176,86 @@ function ReplyList({ replies }) {
 // REPLY INPUT
 function ReplyInput({ parentId, onAddReply }) {
   const emoji = useEmojiInput("");
+  const [showInput, setShowInput] = useState(false);
 
   const handleReply = () => {
     if (!emoji.value.trim()) return;
     onAddReply(parentId, emoji.value.trim());
     emoji.setValue("");
+    setShowInput(false);
   };
 
+  if (!showInput) {
+    return (
+      <button
+        onClick={() => setShowInput(true)}
+        className="ml-12 mt-2 flex items-center gap-1 text-xs font-medium text-pink-500 hover:text-pink-600 transition"
+      >
+        <FiCornerDownRight size={13} />
+        Reply
+      </button>
+    );
+  }
+
   return (
-    <div className="flex items-center mt-2 ml-6">
-      <CommentInput emoji={emoji} onSubmit={handleReply} submitLabel="Reply" />
+    <div className="ml-12 mt-2">
+      <CommentInput
+        emoji={emoji}
+        onSubmit={handleReply}
+        submitLabel="Reply"
+        compact
+      />
     </div>
   );
 }
 
 // REUSABLE INPUT
-function CommentInput({ emoji, onSubmit, submitLabel }) {
+function CommentInput({ emoji, onSubmit, submitLabel, username, compact }) {
   return (
-    <div className="flex items-center border rounded-md px-2 py-1 w-full relative">
-      <button type="button" className="text-xl mr-2" onClick={emoji.toggle}>
-        😀
-      </button>
-
-      <input
-        type="text"
-        className="flex-1 outline-none px-2 py-1"
-        placeholder={submitLabel === "Post" ? "Add a comment..." : "Reply..."}
-        value={emoji.value}
-        onChange={(e) => emoji.setValue(e.target.value)}
-      />
-
-      <button
-        type="button"
-        onClick={onSubmit}
-        className="ml-2 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-      >
-        {submitLabel}
-      </button>
-
-      {emoji.open && (
-        <div className="absolute left-0 mt-10 z-50">
-          <Picker onEmojiClick={emoji.onEmojiClick} />
+    <div className="flex items-center gap-2">
+      {!compact && (
+        <div className="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-semibold text-xs shrink-0">
+          {getInitials(username)}
         </div>
       )}
+
+      <div className="flex items-center flex-1 border border-pink-200 rounded-full px-3 py-1.5 relative bg-pink-50/30 focus-within:ring-2 focus-within:ring-pink-300 focus-within:border-pink-400 transition">
+        <button
+          type="button"
+          className="text-pink-400 hover:text-pink-600 transition mr-2"
+          onClick={emoji.toggle}
+          aria-label="Add emoji"
+        >
+          <FiSmile size={18} />
+        </button>
+
+        <input
+          type="text"
+          className="flex-1 outline-none bg-transparent px-1 py-1 text-sm text-gray-700 placeholder:text-pink-300"
+          placeholder={
+            submitLabel === "Post" ? "Add a comment..." : "Write a reply..."
+          }
+          value={emoji.value}
+          onChange={(e) => emoji.setValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSubmit()}
+        />
+
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={!emoji.value.trim()}
+          aria-label={submitLabel}
+          className="ml-2 flex items-center justify-center w-8 h-8 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        >
+          <FiSend size={14} />
+        </button>
+
+        {emoji.open && (
+          <div className="absolute left-0 top-full mt-2 z-50">
+            <Picker onEmojiClick={emoji.onEmojiClick} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,10 +1,7 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
-
-import authorizeRoles from
-  "../roles/role.middleware.js";
+import { protect } from "../auth/auth.middleware.js";
+import authorizeRoles from "../roles/role.middleware.js";
 
 import {
   getSystemSettingController,
@@ -19,10 +16,7 @@ PUBLIC READ (SAFE SETTINGS)
 =========================
 */
 
-router.get(
-  "/",
-  getSystemSettingController
-);
+router.get("/", getSystemSettingController);
 
 /*
 =========================
@@ -32,9 +26,9 @@ ADMIN UPDATE
 
 router.put(
   "/",
-  authenticate,
+  protect,
   authorizeRoles("ADMIN", "SUPER_ADMIN"),
-  updateSystemSettingController
+  updateSystemSettingController,
 );
 
 export default router;

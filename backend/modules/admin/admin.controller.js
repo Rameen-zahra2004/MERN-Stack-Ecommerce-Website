@@ -1,185 +1,308 @@
+// import {
+//   createAdminService,
+//   deleteAdminService,
+//   getAdminsService,
+//   getSingleAdminService,
+//   updateAdminService,
+// } from "./admin.service.js";
+
+// import {
+//   createAdminValidation,
+//   updateAdminValidation,
+// } from "./admin.validation.js";
+// import { ADMIN_MESSAGES } from "./admin.constants.js";
+
+// export const getAdminsController = async (req, res, next) => {
+//   try {
+//     const page = Number(req.query.page) || 1;
+//     const limit = Math.min(Number(req.query.limit) || 20, 100); // also caps unbounded limit
+//     const result = await getAdminsService({ page, limit });
+
+//     return res.status(200).json({
+//       success: true,
+//       message: ADMIN_MESSAGES.FETCH_SUCCESS,
+//       ...result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export const getSingleAdminController = async (req, res, next) => {
+//   try {
+//     const result = await getSingleAdminService(req.params.id);
+//     return res.status(200).json({
+//       success: true,
+//       message: ADMIN_MESSAGES.FETCH_SINGLE_SUCCESS,
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export const createAdminController = async (req, res, next) => {
+//   try {
+//     const { error, value } = createAdminValidation.validate(req.body, {
+//       abortEarly: false,
+//     });
+
+//     if (error) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Validation failed",
+//         errors: error.details.map((err) => err.message),
+//       });
+//     }
+
+//     // FIX (C4): role/permissions are never taken from the client.
+//     // Only an existing SUPER_ADMIN requester may create another admin,
+//     // and new admins always start as plain "ADMIN" with no permissions.
+//     if (req.admin?.role !== "SUPER_ADMIN") {
+//       return res.status(403).json({
+//         success: false,
+//         message: "Only a super admin can create new admin accounts.",
+//       });
+//     }
+
+//     const result = await createAdminService({
+//       ...value,
+//       role: "ADMIN",
+//       permissions: [],
+//     });
+
+//     return res.status(201).json({
+//       success: true,
+//       message: ADMIN_MESSAGES.CREATE_SUCCESS,
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export const updateAdminController = async (req, res, next) => {
+//   try {
+//     const { error, value } = updateAdminValidation.validate(req.body, {
+//       abortEarly: false,
+//     });
+
+//     if (error) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Validation failed",
+//         errors: error.details.map((err) => err.message),
+//       });
+//     }
+
+//     const result = await updateAdminService(req.params.id, value);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: ADMIN_MESSAGES.UPDATE_SUCCESS,
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+// export const deleteAdminController = async (req, res, next) => {
+//   try {
+//     const result = await deleteAdminService(req.params.id);
+//     return res.status(200).json({
+//       success: true,
+//       message: ADMIN_MESSAGES.DELETE_SUCCESS,
+//       data: result,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 import {
   createAdminService,
   deleteAdminService,
   getAdminsService,
   getSingleAdminService,
   updateAdminService,
+  loginAdminService,
+  logoutAdminService,
 } from "./admin.service.js";
 
 import {
   createAdminValidation,
   updateAdminValidation,
+  loginAdminValidation,
 } from "./admin.validation.js";
+import { ADMIN_MESSAGES } from "./admin.constants.js";
 
-import {
-  ADMIN_MESSAGES,
-} from "./admin.constants.js";
+export const getAdminsController = async (req, res, next) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Math.min(Number(req.query.limit) || 20, 100);
+    const result = await getAdminsService({ page, limit });
 
-/*
-=========================
-GET ADMINS
-=========================
-*/
+    return res.status(200).json({
+      success: true,
+      message: ADMIN_MESSAGES.FETCH_SUCCESS,
+      ...result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const getAdminsController =
-  async (req, res, next) => {
-    try {
-      const page =
-        Number(req.query.page) || 1;
+export const getSingleAdminController = async (req, res, next) => {
+  try {
+    const result = await getSingleAdminService(req.params.id);
+    return res.status(200).json({
+      success: true,
+      message: ADMIN_MESSAGES.FETCH_SINGLE_SUCCESS,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-      const limit =
-        Number(req.query.limit) || 20;
+export const createAdminController = async (req, res, next) => {
+  try {
+    const { error, value } = createAdminValidation.validate(req.body, {
+      abortEarly: false,
+    });
 
-      const result =
-        await getAdminsService({
-          page,
-          limit,
-        });
-
-      return res.status(200).json({
-        success: true,
-        message:
-          ADMIN_MESSAGES.FETCH_SUCCESS,
-        ...result,
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((err) => err.message),
       });
-    } catch (error) {
-      next(error);
     }
-  };
 
-/*
-=========================
-GET SINGLE ADMIN
-=========================
-*/
-
-export const getSingleAdminController =
-  async (req, res, next) => {
-    try {
-      const result =
-        await getSingleAdminService(
-          req.params.id
-        );
-
-      return res.status(200).json({
-        success: true,
-        message:
-          ADMIN_MESSAGES.FETCH_SINGLE_SUCCESS,
-        data: result,
+    // Route already gates this with restrictToSuperAdmin; kept here as defense-in-depth.
+    if (req.admin?.role !== "SUPER_ADMIN") {
+      return res.status(403).json({
+        success: false,
+        message: "Only a super admin can create new admin accounts.",
       });
-    } catch (error) {
-      next(error);
     }
-  };
 
-/*
-=========================
-CREATE ADMIN
-=========================
-*/
+    const result = await createAdminService({
+      ...value,
+      role: "ADMIN",
+      permissions: [],
+    });
 
-export const createAdminController =
-  async (req, res, next) => {
-    try {
-      const { error, value } =
-        createAdminValidation.validate(
-          req.body,
-          {
-            abortEarly: false,
-          }
-        );
+    return res.status(201).json({
+      success: true,
+      message: ADMIN_MESSAGES.CREATE_SUCCESS,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-      if (error) {
-        return res.status(400).json({
-          success: false,
-          message: "Validation failed",
-          errors: error.details.map(
-            (err) => err.message
-          ),
-        });
-      }
+export const updateAdminController = async (req, res, next) => {
+  try {
+    const { error, value } = updateAdminValidation.validate(req.body, {
+      abortEarly: false,
+    });
 
-      const result =
-        await createAdminService(
-          value
-        );
-
-      return res.status(201).json({
-        success: true,
-        message:
-          ADMIN_MESSAGES.CREATE_SUCCESS,
-        data: result,
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((err) => err.message),
       });
-    } catch (error) {
-      next(error);
     }
-  };
 
-/*
-=========================
-UPDATE ADMIN
-=========================
-*/
+    const result = await updateAdminService(req.params.id, value);
 
-export const updateAdminController =
-  async (req, res, next) => {
-    try {
-      const { error, value } =
-        updateAdminValidation.validate(
-          req.body,
-          {
-            abortEarly: false,
-          }
-        );
+    return res.status(200).json({
+      success: true,
+      message: ADMIN_MESSAGES.UPDATE_SUCCESS,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-      if (error) {
-        return res.status(400).json({
-          success: false,
-          message: "Validation failed",
-          errors: error.details.map(
-            (err) => err.message
-          ),
-        });
-      }
-
-      const result =
-        await updateAdminService(
-          req.params.id,
-          value
-        );
-
-      return res.status(200).json({
-        success: true,
-        message:
-          ADMIN_MESSAGES.UPDATE_SUCCESS,
-        data: result,
+export const deleteAdminController = async (req, res, next) => {
+  try {
+    if (req.admin && String(req.admin._id) === req.params.id) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own admin account.",
       });
-    } catch (error) {
-      next(error);
     }
-  };
 
-/*
-=========================
-DELETE ADMIN
-=========================
-*/
+    const result = await deleteAdminService(req.params.id);
+    return res.status(200).json({
+      success: true,
+      message: ADMIN_MESSAGES.DELETE_SUCCESS,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const deleteAdminController =
-  async (req, res, next) => {
-    try {
-      const result =
-        await deleteAdminService(
-          req.params.id
-        );
+/* ===================== LOGIN ===================== */
 
-      return res.status(200).json({
-        success: true,
-        message:
-          ADMIN_MESSAGES.DELETE_SUCCESS,
-        data: result,
+export const loginAdminController = async (req, res, next) => {
+  try {
+    const { error, value } = loginAdminValidation.validate(req.body, {
+      abortEarly: false,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: error.details.map((err) => err.message),
       });
-    } catch (error) {
-      next(error);
     }
-  };
+
+    const admin = await loginAdminService(res, value);
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged in successfully.",
+      data: { admin },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===================== LOGOUT ===================== */
+
+export const logoutAdminController = async (req, res, next) => {
+  try {
+    await logoutAdminService(res, req.admin?._id);
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===================== GET ME (NEW — session rehydration) ===================== */
+
+export const getMeController = async (req, res, next) => {
+  try {
+    // req.admin is already a full Mongoose doc from protectAdmin —
+    // toJSON() on the model strips password/refreshToken automatically.
+    return res.status(200).json({
+      success: true,
+      message: "Admin profile fetched.",
+      data: { admin: req.admin },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

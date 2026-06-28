@@ -1,35 +1,52 @@
-import express from "express";
-
+import { Router } from "express";
 import {
-  loginController,
-  logoutController,
-  registerController,
+  register,
+  verifyEmail,
+  resendVerification,
+  login,
+  refreshToken,
+  logout,
+  getMe,
+  forgotPassword,
+  resetPassword,
 } from "./auth.controller.js";
+import { protect } from "./auth.middleware.js";
 
-import authenticate from "./auth.middleware.js";
+/**
+ * auth.routes.js
+ * All authentication routes for The 999 Boxs.
+ *
+ * Mounted at: /api/auth
+ *
+ * Public routes (no auth required):
+ *   POST   /api/auth/register
+ *   GET    /api/auth/verify-email?token=<raw_token>
+ *   POST   /api/auth/resend-verification
+ *   POST   /api/auth/login
+ *   POST   /api/auth/refresh          ← cookie-based, scoped path
+ *   POST   /api/auth/forgot-password
+ *   POST   /api/auth/reset-password
+ *
+ * Protected routes (access token required):
+ *   POST   /api/auth/logout
+ *   GET    /api/auth/me               ← auto-login check on React refresh
+ */
 
-const router = express.Router();
+const router = Router();
 
-/*
-=========================
-AUTH ROUTES
-=========================
-*/
+// ── Public ──────────────────────────────────────────────────────────────────
+router.post("/register", register);
+router.get("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerification);
+router.post("/login", login);
+router.post("/refresh", refreshToken); // Refresh token cookie scoped to this path
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
-router.post(
-  "/register",
-  registerController
-);
-
-router.post(
-  "/login",
-  loginController
-);
-
-router.post(
-  "/logout",
-  authenticate,
-  logoutController
-);
+// ── Protected ────────────────────────────────────────────────────────────────
+router.use(protect); // All routes below require valid access token
+router.post("/logout", logout);
+router.get("/me", getMe);
 
 export default router;
+

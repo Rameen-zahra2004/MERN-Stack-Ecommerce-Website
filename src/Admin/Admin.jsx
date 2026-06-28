@@ -1,6 +1,7 @@
-// import { useState } from "react";
+// import { useState, useEffect } from "react";
 // import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
+
 // import {
 //   FaHome,
 //   FaCube,
@@ -12,7 +13,8 @@
 //   FaBars,
 //   FaUserCheck,
 // } from "react-icons/fa";
-// import { logOut } from "../Slices/signinSlice"; // Adjust path
+
+// import { logOut } from "../Slices/signinSlice";
 
 // const links = [
 //   { to: "/admin/dashboard", label: "Dashboard", icon: FaHome },
@@ -26,58 +28,91 @@
 
 // export default function Admin() {
 //   const [sidebarOpen, setSidebarOpen] = useState(false);
+
 //   const { pathname } = useLocation();
 //   const dispatch = useDispatch();
 //   const navigate = useNavigate();
 
 //   const { user } = useSelector((state) => state.signinuser || {});
 
-//   if (!user || user.role !== "admin") return null; // Only admins see this
+//   /*
+//   =========================
+//   SAFE AUTH GUARD
+//   =========================
+//   */
+//   useEffect(() => {
+//     if (!user) {
+//       navigate("/signin", { replace: true });
+//       return;
+//     }
 
+//     if (user.role !== "admin") {
+//       navigate("/user", { replace: true });
+//     }
+//   }, [user, navigate]);
+
+//   /*
+//   =========================
+//   LOADING GUARD (PREVENT FLICKER)
+//   =========================
+//   */
+//   if (!user || user.role !== "admin") {
+//     return null;
+//   }
+
+//   /*
+//   =========================
+//   LOGOUT
+//   =========================
+//   */
 //   const handleLogout = () => {
 //     dispatch(logOut());
-//     localStorage.removeItem("user"); // remove user info if stored
-//     navigate("/signin"); // redirect to login
+//     localStorage.removeItem("currentUser");
+//     localStorage.removeItem("token");
+
+//     navigate("/signin", { replace: true });
 //   };
 
 //   return (
 //     <div className="flex min-h-screen bg-gray-50">
-//       {/* Sidebar */}
+//       {/* ================= SIDEBAR ================= */}
 //       <aside
-//         className={`shrink-0 h-screen bg-white border-r flex flex-col transition-all duration-300 ease-in-out ${
+//         className={`shrink-0 h-screen bg-white border-r flex flex-col transition-all duration-300 ${
 //           sidebarOpen ? "w-72" : "w-20"
 //         }`}
 //       >
-//         {/* Header & Toggle */}
+//         {/* Header */}
 //         <div className="flex items-center justify-between p-4 border-b">
 //           {sidebarOpen && (
 //             <h1 className="text-xl font-bold text-blue-600">Admin Panel</h1>
 //           )}
+
 //           <button
 //             onClick={() => setSidebarOpen(!sidebarOpen)}
-//             className="text-gray-600 hover:text-gray-800 p-1 rounded-md focus:outline-none"
+//             className="text-gray-600 hover:text-gray-800"
 //           >
 //             <FaBars className="w-5 h-5" />
 //           </button>
 //         </div>
 
-//         {/* Navigation Links */}
+//         {/* Navigation */}
 //         <nav className="flex-1 flex flex-col p-2 gap-1 overflow-y-auto">
 //           {links.map((l) => {
 //             const Icon = l.icon;
 //             const active = pathname.startsWith(l.to);
+
 //             return (
 //               <Link
 //                 key={l.to}
 //                 to={l.to}
-//                 className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150 ${
+//                 className={`flex items-center gap-3 px-3 py-2 rounded-md transition ${
 //                   active
 //                     ? "bg-blue-50 text-blue-600 font-semibold"
 //                     : "text-gray-700 hover:bg-gray-50"
 //                 }`}
 //               >
-//                 <Icon className="w-5 h-5 shrink-0" />
-//                 {sidebarOpen && <span className="font-medium">{l.label}</span>}
+//                 <Icon className="w-5 h-5" />
+//                 {sidebarOpen && <span>{l.label}</span>}
 //               </Link>
 //             );
 //           })}
@@ -89,16 +124,16 @@
 //             onClick={handleLogout}
 //             className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-red-600 hover:bg-red-50"
 //           >
-//             <FaSignOutAlt className="w-5 h-5 shrink-0" />
+//             <FaSignOutAlt className="w-5 h-5" />
 //             {sidebarOpen && "Logout"}
 //           </button>
 //         </div>
 //       </aside>
 
-//       {/* Main Content */}
-//       <div className="flex-1 flex flex-col transition-all duration-300">
+//       {/* ================= MAIN CONTENT ================= */}
+//       <div className="flex-1 flex flex-col">
 //         <main className="p-4 md:p-6 flex-1 overflow-auto">
-//           <Outlet /> {/* nested admin pages render here */}
+//           <Outlet />
 //         </main>
 //       </div>
 //     </div>
@@ -121,6 +156,8 @@ import {
 } from "react-icons/fa";
 
 import { logOut } from "../Slices/signinSlice";
+
+const ADMIN_ROLES = new Set(["admin", "super_admin", "moderator"]);
 
 const links = [
   { to: "/admin/dashboard", label: "Dashboard", icon: FaHome },
@@ -152,7 +189,8 @@ export default function Admin() {
       return;
     }
 
-    if (user.role !== "admin") {
+    const role = user?.role?.toLowerCase();
+    if (!ADMIN_ROLES.has(role)) {
       navigate("/user", { replace: true });
     }
   }, [user, navigate]);
@@ -162,7 +200,7 @@ export default function Admin() {
   LOADING GUARD (PREVENT FLICKER)
   =========================
   */
-  if (!user || user.role !== "admin") {
+  if (!user || !ADMIN_ROLES.has(user?.role?.toLowerCase())) {
     return null;
   }
 
@@ -181,7 +219,6 @@ export default function Admin() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-
       {/* ================= SIDEBAR ================= */}
       <aside
         className={`shrink-0 h-screen bg-white border-r flex flex-col transition-all duration-300 ${
@@ -191,9 +228,7 @@ export default function Admin() {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           {sidebarOpen && (
-            <h1 className="text-xl font-bold text-blue-600">
-              Admin Panel
-            </h1>
+            <h1 className="text-xl font-bold text-blue-600">Admin Panel</h1>
           )}
 
           <button

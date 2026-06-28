@@ -1,7 +1,6 @@
 import express from "express";
 
-import authenticate from
-  "../auth/auth.middleware.js";
+import { protect } from "../auth/auth.middleware.js";
 
 import {
   createCommentController,
@@ -18,27 +17,12 @@ COMMENT ROUTES
 =========================
 */
 
-router.get(
-  "/:productId",
-  getCommentsController
-);
+router.get("/:productId", getCommentsController);
 
-router.post(
-  "/",
-  authenticate,
-  createCommentController
-);
+router.post("/", protect, createCommentController);
 
-router.put(
-  "/:id",
-  authenticate,
-  updateCommentController
-);
+router.put("/:id", protect, updateCommentController);
 
-router.delete(
-  "/:id",
-  authenticate,
-  deleteCommentController
-);
+router.delete("/:id", protect, deleteCommentController);
 
 export default router;

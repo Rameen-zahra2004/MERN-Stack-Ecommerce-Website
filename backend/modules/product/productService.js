@@ -1,12 +1,8 @@
 import Product from "./product.model.js";
 
-import {
-  generateSlug,
-} from "./product.utils.js";
+import { generateSlug } from "./product.utils.js";
 
-import {
-  PRODUCT_MESSAGES,
-} from "./product.constants.js";
+import { PRODUCT_MESSAGES } from "./product.constants.js";
 
 /*
 =========================
@@ -14,19 +10,15 @@ CREATE PRODUCT
 =========================
 */
 
-export const createProductService =
-  async (payload) => {
-    const product =
-      await Product.create({
-        ...payload,
+export const createProductService = async (payload) => {
+  const product = await Product.create({
+    ...payload,
 
-        slug: generateSlug(
-          payload.name
-        ),
-      });
+    slug: generateSlug(payload.name),
+  });
 
-    return product;
-  };
+  return product;
+};
 
 /*
 =========================
@@ -34,61 +26,44 @@ GET ALL PRODUCTS
 =========================
 */
 
-export const getProductsService =
-  async (query) => {
-    const {
-      page = 1,
-      limit = 10,
-      category,
-      search,
-    } = query;
+export const getProductsService = async (query) => {
+  const { page = 1, limit = 10, category, search } = query;
 
-    const filter = {
-      isActive: true,
-    };
+  const filter = { isActive: true };
 
-    if (category) {
-      filter.category = category;
-    }
+  if (category) filter.category = category;
+  if (search) filter.$text = { $search: search };
 
-    if (search) {
-      filter.$text = {
-        $search: search,
-      };
-    }
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit))
+      .sort({ createdAt: -1 }),
+    Product.countDocuments(filter),
+  ]);
 
-    const products =
-      await Product.find(filter)
-        .skip(
-          (page - 1) * limit
-        )
-        .limit(limit)
-        .sort({
-          createdAt: -1,
-        });
-
-    return products;
+  return {
+    products,
+    total,
+    page: Number(page),
+    pages: Math.ceil(total / Number(limit)),
   };
-
+};
 /*
 =========================
 GET SINGLE PRODUCT
 =========================
 */
 
-export const getProductService =
-  async (id) => {
-    const product =
-      await Product.findById(id);
+export const getProductService = async (id) => {
+  const product = await Product.findById(id);
 
-    if (!product) {
-      throw new Error(
-        PRODUCT_MESSAGES.NOT_FOUND
-      );
-    }
+  if (!product) {
+    throw new Error(PRODUCT_MESSAGES.NOT_FOUND);
+  }
 
-    return product;
-  };
+  return product;
+};
 
 /*
 =========================
@@ -96,32 +71,22 @@ UPDATE PRODUCT
 =========================
 */
 
-export const updateProductService =
-  async (id, payload) => {
-    if (payload.name) {
-      payload.slug =
-        generateSlug(
-          payload.name
-        );
-    }
+export const updateProductService = async (id, payload) => {
+  if (payload.name) {
+    payload.slug = generateSlug(payload.name);
+  }
 
-    const product =
-      await Product.findByIdAndUpdate(
-        id,
-        payload,
-        {
-          new: true,
-        }
-      );
+  const product = await Product.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
 
-    if (!product) {
-      throw new Error(
-        PRODUCT_MESSAGES.NOT_FOUND
-      );
-    }
+  if (!product) {
+    throw new Error(PRODUCT_MESSAGES.NOT_FOUND);
+  }
 
-    return product;
-  };
+  return product;
+};
 
 /*
 =========================
@@ -129,22 +94,18 @@ DELETE PRODUCT (SOFT)
 =========================
 */
 
-export const deleteProductService =
-  async (id) => {
-    const product =
-      await Product.findByIdAndUpdate(
-        id,
-        {
-          isActive: false,
-        },
-        { new: true }
-      );
+export const deleteProductService = async (id) => {
+  const product = await Product.findByIdAndUpdate(
+    id,
+    {
+      isActive: false,
+    },
+    { new: true },
+  );
 
-    if (!product) {
-      throw new Error(
-        PRODUCT_MESSAGES.NOT_FOUND
-      );
-    }
+  if (!product) {
+    throw new Error(PRODUCT_MESSAGES.NOT_FOUND);
+  }
 
-    return product;
-  };
+  return product;
+};

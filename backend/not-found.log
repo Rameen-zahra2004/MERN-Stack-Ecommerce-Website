@@ -210,3 +210,5 @@
 {"message":"Route Not Found","path":"/api/activityLogs/activity","method":"GET","timestamp":"2026-05-20T06:27:46.964Z","ip":"::1"}
 {"message":"Route Not Found","path":"/api/admin/security","method":"GET","timestamp":"2026-05-20T06:27:46.966Z","ip":"::1"}
 {"message":"Route Not Found","path":"/api/activityLogs/activity","method":"GET","timestamp":"2026-05-20T06:27:46.967Z","ip":"::1"}
+{"message":"Route Not Found","path":"/favicon.ico","method":"GET","timestamp":"2026-06-20T12:07:01.613Z","ip":"::1"}
+{"message":"Route Not Found","path":"/api/products","method":"GET","timestamp":"2026-06-20T12:23:17.544Z","ip":"::1"}

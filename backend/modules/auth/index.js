@@ -27,7 +27,7 @@ export {
 
 export {
   sanitizeUser,
-} from "./auth.utils.js";
+} from "./authUtils.js";
 
 export {
   default as authenticate,

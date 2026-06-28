@@ -10,7 +10,6 @@
 // import activeUsersReducer from "../Slices/activeuserSlice";
 // import commentsReducer from "../Slices/commentSlice";
 // import adminProductReducer from "../AdminSlices/productmanagmentSlice";
-
 // import systemReducer from "../AdminSlices/systemSlice";
 // import exportReducer from "../AdminSlices/exportdeleteSlice";
 // import profileReducer from "../AdminSlices/profileSlice";
@@ -22,7 +21,8 @@
 // import orderDetailReducer from "../Slices/orderSlice";
 // import userSettingsReducer from "../Slices/userSettingSlice";
 // import wishListReducer from "../Slices/wishListSlice";
-// export default configureStore({
+
+// export const store = configureStore({
 //   reducer: {
 //     products: productReducer,
 //     user: userReducer,
@@ -35,7 +35,6 @@
 //     activeUsers: activeUsersReducer,
 //     comments: commentsReducer,
 //     adminProducts: adminProductReducer,
-
 //     system: systemReducer,
 //     export: exportReducer,
 //     profile: profileReducer,
@@ -49,6 +48,8 @@
 //     wishlist: wishListReducer,
 //   },
 // });
+
+// export default store;
 import { configureStore } from "@reduxjs/toolkit";
 import productReducer from "../Slices/productSlice";
 import userReducer from "../AdminSlices/userSlice";
@@ -68,13 +69,14 @@ import rolesReducer from "../AdminSlices/rolesSlice";
 import activityReducer from "../AdminSlices/activitySlice";
 import securityReducer from "../AdminSlices/securitySlice";
 import themeReducer from "../AdminSlices/themeSlice";
-import loginsReducer from "../AdminSlices/adminLoginSlice";
+import adminLoginReducer from "../AdminSlices/adminLoginSlice";
 import orderDetailReducer from "../Slices/orderSlice";
 import userSettingsReducer from "../Slices/userSettingSlice";
 import wishListReducer from "../Slices/wishListSlice";
 
 export const store = configureStore({
   reducer: {
+    // ── User slices ──────────────────────────────────────
     products: productReducer,
     user: userReducer,
     form: formReducer,
@@ -85,6 +87,12 @@ export const store = configureStore({
     revenue: revenueReducer,
     activeUsers: activeUsersReducer,
     comments: commentsReducer,
+    orderDetail: orderDetailReducer,
+    userSettings: userSettingsReducer,
+    wishlist: wishListReducer,
+
+    // ── Admin slices ─────────────────────────────────────
+    adminLogin: adminLoginReducer,
     adminProducts: adminProductReducer,
     system: systemReducer,
     export: exportReducer,
@@ -93,10 +101,6 @@ export const store = configureStore({
     activity: activityReducer,
     security: securityReducer,
     theme: themeReducer,
-    logins: loginsReducer,
-    orderDetail: orderDetailReducer,
-    userSettings: userSettingsReducer,
-    wishlist: wishListReducer,
   },
 });
 
