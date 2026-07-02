@@ -1,4 +1,4 @@
-import User from "../user/user.model.js";
+import User from "../user/User.model.js";
 
 import {
   AUTH_MESSAGES,
