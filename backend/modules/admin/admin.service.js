@@ -1,4 +1,4 @@
-import Admin from "./admin.model.js";
+import Admin from "./Admin.model.js";
 
 import {
   ADMIN_MESSAGES,
