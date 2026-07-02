@@ -1,4 +1,4 @@
-import User from "./user.model.js";
+import User from "../user/User.model.js";
 
 import {
   hashPassword,
