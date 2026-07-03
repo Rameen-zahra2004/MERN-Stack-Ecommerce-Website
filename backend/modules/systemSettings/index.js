@@ -1,7 +1,7 @@
 export {
   getSystemSettingController,
   updateSystemSettingController,
-} from "./systemSetting.controller.js";
+} from "./systemSettings.controller.js";
 
 export {
   getSystemSettingService,

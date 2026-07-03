@@ -1,4 +1,4 @@
-import Profile from "./profile.model.js";
+import Profile from "./Profile.model.js";
 
 import {
   PROFILE_MESSAGES,

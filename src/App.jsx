@@ -6,9 +6,11 @@
 // import Header from "./Component/Header";
 // import Footer from "./Component/Footer";
 
+// /* ── Route Guards ─────────────────────────────────────── */
 // import ProtectedRoute from "./Admin/Protectedcomponent";
+// import ProtectedAdminRoute from "./Admin/Protectedcomponent";
 
-// /* ================= PUBLIC PAGES ================= */
+// /* ── Public Pages ─────────────────────────────────────── */
 // import Product from "./Pages/Product";
 // import ProductPage from "./Pages/ProductPage";
 // import UserCartPage from "./Pages/Cart";
@@ -17,7 +19,8 @@
 // import NotFound from "./Component/Errorpage";
 // import ServerError from "./Component/ServerError";
 
-// /* ================= ADMIN ================= */
+// /* ── Admin Pages ──────────────────────────────────────── */
+// // import AdminLogin from "./Admin/AdminLogin";
 // import Admin from "./Admin/Admin";
 // import DashboardHome from "./Admin/Dashboard";
 // import AdminUserPage from "./Admin/Userpage";
@@ -28,7 +31,7 @@
 // import AdminSettings from "./AdminSettinngComponent/AdminSetting";
 // import AdminOrdersPage from "./Admin/AdminOrderspage";
 
-// /* ================= USER ================= */
+// /* ── User Pages ───────────────────────────────────────── */
 // import UserPage from "./Pages/User";
 // import UserOrdersPage from "./Pages/UserOrder";
 // import UserWishlistPage from "./Pages/WishList";
@@ -49,46 +52,36 @@
 //   }, [theme]);
 
 //   return (
-//     <div
-//       className="
-//         min-h-screen
-//         bg-linear-to-br from-[#fff1f7] via-[#fff8fb] to-[#ffe8f1]
-//         dark:bg-gray-900
-//         text-gray-900 dark:text-gray-200
-//       "
-//     >
-//       {/* subtle glow background layer */}
+//     <div className="min-h-screen bg-linear-to-br from-[#fff1f7] via-[#fff8fb] to-[#ffe8f1] dark:bg-gray-900 text-gray-900 dark:text-gray-200">
+//       {/* Background glow */}
 //       <div className="fixed inset-0 pointer-events-none">
 //         <div className="absolute -top-32 -left-32 w-96 h-96 bg-pink-300/20 blur-3xl rounded-full" />
 //         <div className="absolute top-1/2 right-0 w-md h-112 bg-rose-300/20 blur-3xl rounded-full" />
 //         <div className="absolute bottom-0 left-1/3 w-120 h-120 bg-pink-200/20 blur-3xl rounded-full" />
 //       </div>
 
-//       {/* ================= USER LAYOUT ================= */}
+//       {/* User layout shell (sidebar + header) */}
 //       {!isAdminRoute && (
 //         <>
 //           <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-
 //           <div
-//             className={`transition-all duration-300 relative z-10 ${
-//               sidebarOpen ? "ml-64" : "ml-0"
-//             }`}
+//             className={`transition-all duration-300 relative z-10 ${sidebarOpen ? "ml-64" : "ml-0"}`}
 //           >
 //             <Header open={sidebarOpen} setOpen={setSidebarOpen} />
 //           </div>
 //         </>
 //       )}
 
-//       {/* ================= MAIN CONTENT ================= */}
+//       {/* Main content */}
 //       <main className={`relative z-10 ${!isAdminRoute ? "p-4" : ""}`}>
 //         <Routes>
-//           {/* PUBLIC */}
-//           <Route path="/signin" element={<Signin />} />
+//           {/* ── PUBLIC ──────────────────────────────────── */}
 //           <Route path="/" element={<Product />} />
+//           <Route path="/signin" element={<Signin />} />
 //           <Route path="/products/:id" element={<ProductPage />} />
 //           <Route path="/cart" element={<UserCartPage />} />
 
-//           {/* USER */}
+//           {/* ── USER (protected) ────────────────────────── */}
 //           <Route
 //             path="/user/*"
 //             element={
@@ -138,13 +131,16 @@
 //             }
 //           />
 
-//           {/* ADMIN */}
+//           {/* ── ADMIN LOGIN (public) ─────────────────────── */}
+//           {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+
+//           {/* ── ADMIN (protected) ───────────────────────── */}
 //           <Route
 //             path="/admin"
 //             element={
-//               <ProtectedRoute role="admin">
+//               <ProtectedAdminRoute>
 //                 <Admin />
-//               </ProtectedRoute>
+//               </ProtectedAdminRoute>
 //             }
 //           >
 //             <Route index element={<DashboardHome />} />
@@ -158,13 +154,12 @@
 //             <Route path="settings" element={<AdminSettings />} />
 //           </Route>
 
-//           {/* ERROR */}
+//           {/* ── ERRORS ──────────────────────────────────── */}
 //           <Route path="/server-error" element={<ServerError />} />
 //           <Route path="*" element={<NotFound />} />
 //         </Routes>
 //       </main>
 
-//       {/* FOOTER */}
 //       {!isAdminRoute && <Footer />}
 //     </div>
 //   );
@@ -179,10 +174,13 @@ import Sidebar from "./Component/Sidebar";
 import Header from "./Component/Header";
 import Footer from "./Component/Footer";
 
-/* ── Route Guards ─────────────────────────────────────── */
-import ProtectedRoute from "./Admin/Protectedcomponent";
-import ProtectedAdminRoute from "./Admin/Protectedcomponent";
-
+// /* ── Route Guards ─────────────────────────────────────── */
+// import ProtectedRoute from "./Admin/Protectedcomponent";
+// import ProtectedAdminRoute from "./Admin/Protectedcomponent";
+import {
+  ProtectedRoute,
+  ProtectedAdminRoute,
+} from "./Admin/Protectedcomponent";
 /* ── Public Pages ─────────────────────────────────────── */
 import Product from "./Pages/Product";
 import ProductPage from "./Pages/ProductPage";
@@ -193,7 +191,7 @@ import NotFound from "./Component/Errorpage";
 import ServerError from "./Component/ServerError";
 
 /* ── Admin Pages ──────────────────────────────────────── */
-// import AdminLogin from "./Admin/AdminLogin";
+import AdminLogin from "./Admin/AdminLogin";
 import Admin from "./Admin/Admin";
 import DashboardHome from "./Admin/Dashboard";
 import AdminUserPage from "./Admin/Userpage";
@@ -305,7 +303,7 @@ function App() {
           />
 
           {/* ── ADMIN LOGIN (public) ─────────────────────── */}
-          {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+          <Route path="/admin/login" element={<AdminLogin />} />
 
           {/* ── ADMIN (protected) ───────────────────────── */}
           <Route

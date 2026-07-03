@@ -1,7 +1,7 @@
 import Order from
   "../orders/order.model.js";
 
-import Revenue from "./revenue.model.js";
+import Revenue from "./Revenue.model.js";
 
 import {
   formatDateRange,

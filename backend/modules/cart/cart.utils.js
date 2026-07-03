@@ -1,57 +1,31 @@
-export const calculateCartTotals =
-  (cart) => {
-    cart.totalItems =
-      cart.items.length;
+import { calculateOrderTotals } from "../shared/orderCalculations.utils.js";
 
-    cart.totalQuantity =
-      cart.items.reduce(
-        (acc, item) =>
-          acc + item.quantity,
-        0
-      );
+/*
+=========================
+CALCULATE CART TOTALS
+=========================
+Mutates the cart object in place with updated item counts
+and financial totals, using the shared calculation utility
+as the single source of truth for tax/shipping/total math.
+*/
 
-    cart.subtotal =
-      cart.items.reduce(
-        (acc, item) =>
-          acc + item.subtotal,
-        0
-      );
+export const calculateCartTotals = (cart) => {
+  cart.totalItems = cart.items.length;
 
-    /*
-    =========================
-    TAX LOGIC
-    =========================
-    */
+  cart.totalQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
 
-    cart.tax =
-      Number(
-        (cart.subtotal * 0.05).toFixed(
-          2
-        )
-      );
+  cart.subtotal = cart.items.reduce((acc, item) => acc + item.subtotal, 0);
 
-    /*
-    =========================
-    SHIPPING LOGIC
-    =========================
-    */
+  const { tax, shippingFee, totalAmount } = calculateOrderTotals({
+    subtotal: cart.subtotal,
+    discount: cart.discount,
+  });
 
-    cart.shippingFee =
-      cart.subtotal > 5000
-        ? 0
-        : 250;
+  cart.tax = tax;
 
-    /*
-    =========================
-    FINAL TOTAL
-    =========================
-    */
+  cart.shippingFee = shippingFee;
 
-    cart.totalAmount =
-      cart.subtotal +
-      cart.tax +
-      cart.shippingFee -
-      cart.discount;
+  cart.totalAmount = totalAmount;
 
-    return cart;
-  };
+  return cart;
+};

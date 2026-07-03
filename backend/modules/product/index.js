@@ -12,7 +12,7 @@ export {
   getProductService,
   updateProductService,
   deleteProductService,
-} from "./product.service.js";
+} from "./productService.js";
 
 export {
   createProductValidation,

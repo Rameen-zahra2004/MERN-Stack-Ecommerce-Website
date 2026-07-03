@@ -1,7 +1,7 @@
 import {
   createActiveUserService,
   getActiveUsersService,
-} from "./activeUser.service.js";
+} from "./activeUser.Service.js";
 
 import { ACTIVE_USER_MESSAGES } from "./activeUser.constants.js";
 

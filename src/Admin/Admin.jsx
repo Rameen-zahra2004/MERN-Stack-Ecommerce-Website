@@ -16,6 +16,8 @@
 
 // import { logOut } from "../Slices/signinSlice";
 
+// const ADMIN_ROLES = new Set(["admin", "super_admin", "moderator"]);
+
 // const links = [
 //   { to: "/admin/dashboard", label: "Dashboard", icon: FaHome },
 //   { to: "/admin/products", label: "Products", icon: FaCube },
@@ -46,7 +48,8 @@
 //       return;
 //     }
 
-//     if (user.role !== "admin") {
+//     const role = user?.role?.toLowerCase();
+//     if (!ADMIN_ROLES.has(role)) {
 //       navigate("/user", { replace: true });
 //     }
 //   }, [user, navigate]);
@@ -56,7 +59,7 @@
 //   LOADING GUARD (PREVENT FLICKER)
 //   =========================
 //   */
-//   if (!user || user.role !== "admin") {
+//   if (!user || !ADMIN_ROLES.has(user?.role?.toLowerCase())) {
 //     return null;
 //   }
 
@@ -139,7 +142,7 @@
 //     </div>
 //   );
 // }
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Outlet, useLocation, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -155,9 +158,7 @@ import {
   FaUserCheck,
 } from "react-icons/fa";
 
-import { logOut } from "../Slices/signinSlice";
-
-const ADMIN_ROLES = new Set(["admin", "super_admin", "moderator"]);
+import { logoutAdmin } from "../AdminSlices/adminLoginSlice";
 
 const links = [
   { to: "/admin/dashboard", label: "Dashboard", icon: FaHome },
@@ -176,45 +177,19 @@ export default function Admin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user } = useSelector((state) => state.signinuser || {});
-
-  /*
-  =========================
-  SAFE AUTH GUARD
-  =========================
-  */
-  useEffect(() => {
-    if (!user) {
-      navigate("/signin", { replace: true });
-      return;
-    }
-
-    const role = user?.role?.toLowerCase();
-    if (!ADMIN_ROLES.has(role)) {
-      navigate("/user", { replace: true });
-    }
-  }, [user, navigate]);
-
-  /*
-  =========================
-  LOADING GUARD (PREVENT FLICKER)
-  =========================
-  */
-  if (!user || !ADMIN_ROLES.has(user?.role?.toLowerCase())) {
-    return null;
-  }
+  // Auth itself is already enforced by ProtectedAdminRoute (which wraps
+  // this component in App.jsx and checks state.adminLogin). This component
+  // just renders the layout — no need to re-check or redirect here.
+  const { admin } = useSelector((state) => state.adminLogin || {});
 
   /*
   =========================
   LOGOUT
   =========================
   */
-  const handleLogout = () => {
-    dispatch(logOut());
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("token");
-
-    navigate("/signin", { replace: true });
+  const handleLogout = async () => {
+    await dispatch(logoutAdmin());
+    navigate("/admin/login", { replace: true });
   };
 
   return (
@@ -228,7 +203,12 @@ export default function Admin() {
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           {sidebarOpen && (
-            <h1 className="text-xl font-bold text-blue-600">Admin Panel</h1>
+            <div>
+              <h1 className="text-xl font-bold text-blue-600">Admin Panel</h1>
+              {admin?.name && (
+                <p className="text-xs text-gray-400 mt-0.5">{admin.name}</p>
+              )}
+            </div>
           )}
 
           <button

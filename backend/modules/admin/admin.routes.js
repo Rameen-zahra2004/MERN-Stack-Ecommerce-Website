@@ -1,32 +1,3 @@
-// import express from "express";
-// import { protect, restrictTo } from "../auth/auth.middleware.js";
-
-// import {
-//   createAdminController,
-//   deleteAdminController,
-//   getAdminsController,
-//   getSingleAdminController,
-//   updateAdminController,
-// } from "./admin.controller.js";
-
-// const router = express.Router();
-
-// /*
-// =========================
-// ADMIN ROUTES
-// =========================
-// */
-
-// // FIX (C1): every route below now requires a valid token AND admin role
-// router.use(protect, restrictTo("admin"));
-
-// router.get("/", getAdminsController);
-// router.get("/:id", getSingleAdminController);
-// router.post("/", createAdminController);
-// router.put("/:id", updateAdminController);
-// router.delete("/:id", deleteAdminController);
-
-// export default router;
 import express from "express";
 import { protectAdmin, restrictToSuperAdmin } from "./admin.middleware.js";
 
@@ -38,6 +9,7 @@ import {
   updateAdminController,
   loginAdminController,
   logoutAdminController,
+  refreshAdminController,
   getMeController,
 } from "./admin.controller.js";
 
@@ -45,6 +17,7 @@ const router = express.Router();
 
 /* ===================== PUBLIC (no auth) ===================== */
 router.post("/login", loginAdminController);
+router.post("/refresh", refreshAdminController);
 
 /* ===================== PROTECTED — any logged-in Admin ===================== */
 router.use(protectAdmin);

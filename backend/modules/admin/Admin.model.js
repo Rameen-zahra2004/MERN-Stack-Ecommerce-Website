@@ -14,10 +14,9 @@ const adminSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
+      unique: true, // this alone already creates the index — no separate index() call needed
       lowercase: true,
       trim: true,
-      index: true,
     },
 
     password: {
@@ -29,13 +28,8 @@ const adminSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: [
-        "SUPER_ADMIN",
-        "ADMIN",
-        "MODERATOR",
-      ],
+      enum: ["SUPER_ADMIN", "ADMIN", "MODERATOR"],
       default: "ADMIN",
-      index: true,
     },
 
     permissions: {
@@ -56,7 +50,6 @@ const adminSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true,
-      index: true,
     },
 
     lastLogin: {
@@ -83,84 +76,52 @@ const adminSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 /*
 =========================
 INDEXES
+email: already indexed via `unique: true` above — declaring it again here
+would create a second, redundant index on the same field.
 =========================
 */
-
-adminSchema.index({
-  email: 1,
-});
-
-adminSchema.index({
-  role: 1,
-});
-
-adminSchema.index({
-  isActive: 1,
-});
+adminSchema.index({ role: 1 });
+adminSchema.index({ isActive: 1 });
 
 /*
 =========================
 HASH PASSWORD
 =========================
 */
-
-adminSchema.pre(
-  "save",
-  async function (next) {
-    if (!this.isModified("password")) {
-      return next();
-    }
-
-    this.password =
-      await bcrypt.hash(
-        this.password,
-        12
-      );
-
-    next();
+adminSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
   }
-);
+  this.password = await bcrypt.hash(this.password, 12);
+});
 
 /*
 =========================
 COMPARE PASSWORD
 =========================
 */
-
-adminSchema.methods.comparePassword =
-  async function (password) {
-    return bcrypt.compare(
-      password,
-      this.password
-    );
-  };
+adminSchema.methods.comparePassword = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
 
 /*
 =========================
 REMOVE SENSITIVE FIELDS
 =========================
 */
+adminSchema.methods.toJSON = function () {
+  const admin = this.toObject();
+  delete admin.password;
+  delete admin.refreshToken;
+  return admin;
+};
 
-adminSchema.methods.toJSON =
-  function () {
-    const admin =
-      this.toObject();
-
-    delete admin.password;
-    delete admin.refreshToken;
-
-    return admin;
-  };
-
-const Admin = mongoose.model(
-  "Admin",
-  adminSchema
-);
+const Admin = mongoose.model("Admin", adminSchema);
 
 export default Admin;

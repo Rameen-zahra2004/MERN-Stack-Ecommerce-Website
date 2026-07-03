@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import { ORDER_STATUS } from "./order.status.js";
+
 const orderItemSchema = new mongoose.Schema(
   {
     product: {
@@ -27,7 +29,7 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new mongoose.Schema(
@@ -43,7 +45,8 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      default: "PENDING",
+      enum: Object.values(ORDER_STATUS),
+      default: ORDER_STATUS.PENDING,
       index: true,
     },
 
@@ -95,14 +98,11 @@ const orderSchema = new mongoose.Schema(
   {
     timestamps: true,
     versionKey: false,
-  }
+  },
 );
 
 orderSchema.index({ user: 1, createdAt: -1 });
 
-const Order = mongoose.model(
-  "Order",
-  orderSchema
-);
+const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

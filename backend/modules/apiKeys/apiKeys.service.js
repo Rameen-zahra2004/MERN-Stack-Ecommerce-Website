@@ -1,4 +1,4 @@
-import ApiKey from "./apiKey.model.js";
+import ApiKey from "./ApiKey.model.js";
 import { generateApiKey, hashApiKey } from "./apiKey.utils.js";
 import { API_KEY_MESSAGES } from "./apiKey.constants.js";
 

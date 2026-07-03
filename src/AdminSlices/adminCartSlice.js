@@ -275,7 +275,8 @@ import publicApi from "../../publicApi";
 const loadCart = () => JSON.parse(localStorage.getItem("cart") || "[]");
 const saveCart = (cart) => localStorage.setItem("cart", JSON.stringify(cart));
 const loadOrders = () => JSON.parse(localStorage.getItem("orders") || "[]");
-const saveOrders = (orders) => localStorage.setItem("orders", JSON.stringify(orders));
+const saveOrders = (orders) =>
+  localStorage.setItem("orders", JSON.stringify(orders));
 
 // ─── Products (dummyjson) ─────────────────────────────────
 export const fetchProduct = createAsyncThunk(
@@ -285,37 +286,36 @@ export const fetchProduct = createAsyncThunk(
       const res = await publicApi.get("/products?limit=20");
       return res.data.products; // dummyjson wraps in { products: [...] }
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch products");
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch products",
+      );
     }
-  }
+  },
 );
 
 // ─── Cart thunks (localStorage) ──────────────────────────
-export const fetchCart = createAsyncThunk(
-  "cart/fetchCart",
-  async () => loadCart()
+export const fetchCart = createAsyncThunk("cart/fetchCart", async () =>
+  loadCart(),
 );
 
 export const addTocart = createAsyncThunk(
   "cart/addTocart",
   async (item, { getState }) => {
     const { cart } = getState().cart;
-    const existing = cart.find(
-      (i) => i.id === item.id && i.size === item.size
-    );
+    const existing = cart.find((i) => i.id === item.id && i.size === item.size);
     let updated;
     if (existing) {
       updated = cart.map((i) =>
         i.id === item.id && i.size === item.size
           ? { ...i, quantity: i.quantity + (item.quantity ?? 1) }
-          : i
+          : i,
       );
     } else {
       updated = [...cart, { ...item, quantity: item.quantity ?? 1 }];
     }
     saveCart(updated);
     return updated;
-  }
+  },
 );
 
 export const updateCartQuantity = createAsyncThunk(
@@ -325,23 +325,21 @@ export const updateCartQuantity = createAsyncThunk(
     const updated = cart.map((i) =>
       i.id === id && i.size === size
         ? { ...i, quantity: Math.max(1, quantity) }
-        : i
+        : i,
     );
     saveCart(updated);
     return updated;
-  }
+  },
 );
 
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
   async ({ id, size }, { getState }) => {
     const { cart } = getState().cart;
-    const updated = cart.filter(
-      (i) => !(i.id === id && i.size === size)
-    );
+    const updated = cart.filter((i) => !(i.id === id && i.size === size));
     saveCart(updated);
     return updated;
-  }
+  },
 );
 
 // ─── Order thunks (localStorage) ─────────────────────────
@@ -360,24 +358,22 @@ export const submitOrder = createAsyncThunk(
     saveOrders(updated);
     saveCart([]);
     return newOrder;
-  }
+  },
 );
 
 export const fetchAllOrders = createAsyncThunk(
   "cart/fetchAllOrders",
-  async () => loadOrders()
+  async () => loadOrders(),
 );
 
 export const updateOrderStatus = createAsyncThunk(
   "cart/updateOrderStatus",
   async ({ id, status }, { getState }) => {
     const { orders } = getState().cart;
-    const updated = orders.map((o) =>
-      o.id === id ? { ...o, status } : o
-    );
+    const updated = orders.map((o) => (o.id === id ? { ...o, status } : o));
     saveOrders(updated);
     return updated;
-  }
+  },
 );
 
 export const deleteOrder = createAsyncThunk(
@@ -387,7 +383,7 @@ export const deleteOrder = createAsyncThunk(
     const updated = orders.filter((o) => o.id !== id);
     saveOrders(updated);
     return updated;
-  }
+  },
 );
 
 // ─── Slice ────────────────────────────────────────────────

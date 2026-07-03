@@ -1,4 +1,4 @@
-import ActiveUser from "./activeUser.model.js";
+import ActiveUser from "./ActiveUser.model.js";
 import { ACTIVE_USER_MESSAGES } from "./activeUser.constants.js";
 
 /*

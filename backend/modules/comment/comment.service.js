@@ -1,4 +1,4 @@
-import Comment from "./comment.model.js";
+import Comment from "./Comment.model.js";
 
 import {
   COMMENT_MESSAGES,

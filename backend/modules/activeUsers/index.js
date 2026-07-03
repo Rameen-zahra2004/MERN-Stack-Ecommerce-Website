@@ -6,7 +6,7 @@ export {
 export {
   getActiveUsersService,
   createActiveUserService,
-} from "./activeUser.service.js";
+} from "./activeUser.Service.js";
 
 export {
   createActiveUserValidation,

@@ -1,4 +1,4 @@
-import ActivityLog from "./activityLog.model.js";
+import ActivityLog from "./ActivityLog.model.js";
 
 import { ACTIVITY_LOG_MESSAGES } from "./activityLog.constants.js";
 
