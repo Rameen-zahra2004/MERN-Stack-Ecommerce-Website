@@ -1,7 +1,6 @@
 import Order from "./order.model.js";
-
 import Cart from
-  "../cart/cart.model.js";
+  "../cart/Cart.model.js";
 
 import Product from
   "../product/product.model.js";
