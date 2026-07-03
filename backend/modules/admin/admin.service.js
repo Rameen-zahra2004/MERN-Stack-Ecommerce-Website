@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import Admin from "./Admin.model.js";
 // import { ADMIN_MESSAGES } from "./admin.constants.js";
 // import {
@@ -7,6 +8,9 @@
 //   attachAuthCookies,
 //   clearAuthCookies,
 // } from "../auth/authUtils.js";
+=======
+import Admin from "./Admin.model.js";
+>>>>>>> origin/main
 
 // const MAX_LOGIN_ATTEMPTS = 5;
 // const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
@@ -467,6 +471,7 @@ export const refreshAdminTokenService = async (res, incomingRefreshToken) => {
     refreshCookieName: "adminRefreshToken",
   });
 
+<<<<<<< HEAD
   return {
     id: admin._id,
     name: admin.name,
@@ -499,3 +504,7 @@ export const seedFirstSuperAdmin = async ({ name, email, password }) => {
 
   return { id: admin._id, email: admin.email, role: admin.role };
 };
+=======
+    return admin;
+  };
+>>>>>>> origin/main
