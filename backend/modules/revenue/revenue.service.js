@@ -7,11 +7,6 @@ import {
   formatDateRange,
 } from "./revenue.utils.js";
 
-/*
-=========================
-GET REVENUE DASHBOARD
-=========================
-*/
 
 export const getRevenueService =
   async (type = "monthly") => {
@@ -20,11 +15,6 @@ export const getRevenueService =
       endDate,
     } = formatDateRange(type);
 
-    /*
-    =========================
-    AGGREGATION PIPELINE
-    =========================
-    */
 
     const result =
       await Order.aggregate([
@@ -79,11 +69,6 @@ export const getRevenueService =
     );
   };
 
-/*
-=========================
-SAVE DAILY SNAPSHOT
-=========================
-*/
 
 export const createRevenueSnapshotService =
   async () => {

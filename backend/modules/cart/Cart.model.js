@@ -104,11 +104,6 @@ const cartSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-INDEXES
-=========================
-*/
 
 cartSchema.index({
   user: 1,

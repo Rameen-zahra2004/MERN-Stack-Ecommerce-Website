@@ -7,11 +7,6 @@ import {
   REVENUE_MESSAGES,
 } from "./revenue.constants.js";
 
-/*
-=========================
-GET DASHBOARD
-=========================
-*/
 
 export const getRevenueController =
   async (req, res, next) => {
@@ -32,11 +27,6 @@ export const getRevenueController =
     }
   };
 
-/*
-=========================
-CREATE SNAPSHOT (ADMIN / CRON)
-=========================
-*/
 
 export const createRevenueSnapshotController =
   async (req, res, next) => {

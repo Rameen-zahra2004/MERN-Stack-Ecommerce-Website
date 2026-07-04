@@ -9,11 +9,6 @@ import {
   PROFILE_MESSAGES,
 } from "./profile.constants.js";
 
-/*
-=========================
-GET PROFILE
-=========================
-*/
 
 export const getProfileController =
   async (req, res, next) => {
@@ -34,11 +29,6 @@ export const getProfileController =
     }
   };
 
-/*
-=========================
-UPDATE PROFILE
-=========================
-*/
 
 export const updateProfileController =
   async (req, res, next) => {
@@ -60,11 +50,6 @@ export const updateProfileController =
     }
   };
 
-/*
-=========================
-ADD ADDRESS
-=========================
-*/
 
 export const addAddressController =
   async (req, res, next) => {
@@ -86,11 +71,6 @@ export const addAddressController =
     }
   };
 
-/*
-=========================
-DELETE ADDRESS
-=========================
-*/
 
 export const deleteAddressController =
   async (req, res, next) => {

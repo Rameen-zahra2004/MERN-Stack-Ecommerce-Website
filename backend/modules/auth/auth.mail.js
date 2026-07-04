@@ -1,10 +1,5 @@
 import nodemailer from "nodemailer";
 
-/*
-=========================
-MAIL TRANSPORTER
-=========================
-*/
 
 export const transporter =
   nodemailer.createTransport({

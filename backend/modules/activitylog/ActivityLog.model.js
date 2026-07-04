@@ -70,11 +70,6 @@ const activityLogSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-INDEXES
-=========================
-*/
 
 activityLogSchema.index({ createdAt: -1 });
 activityLogSchema.index({ module: 1 });

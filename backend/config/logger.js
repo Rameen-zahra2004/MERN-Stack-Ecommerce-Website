@@ -1,22 +1,12 @@
 import winston from "winston";
 import env from "./env.js";
 
-/*
-=========================
-LOG LEVEL CONFIG
-=========================
-*/
 
 const level =
   env.NODE_ENV === "production"
     ? "info"
     : "debug";
 
-/*
-=========================
-LOG FORMATTER
-=========================
-*/
 
 const format = winston.format.combine(
   winston.format.timestamp(),
@@ -26,11 +16,6 @@ const format = winston.format.combine(
   winston.format.json()
 );
 
-/*
-=========================
-LOGGER INSTANCE
-=========================
-*/
 
 const logger = winston.createLogger({
   level,
@@ -41,11 +26,6 @@ const logger = winston.createLogger({
   },
 
   transports: [
-    /*
-    =========================
-    CONSOLE (DEV ONLY)
-    =========================
-    */
     new winston.transports.Console({
       format:
         env.NODE_ENV === "development"
@@ -56,32 +36,17 @@ const logger = winston.createLogger({
           : winston.format.json(),
     }),
 
-    /*
-    =========================
-    ERROR LOG FILE
-    =========================
-    */
     new winston.transports.File({
       filename: "logs/error.log",
       level: "error",
     }),
 
-    /*
-    =========================
-    COMBINED LOG FILE
-    =========================
-    */
     new winston.transports.File({
       filename: "logs/combined.log",
     }),
   ],
 });
 
-/*
-=========================
-GLOBAL EXCEPTION HANDLING
-=========================
-*/
 
 logger.exceptions.handle(
   new winston.transports.File({
@@ -89,11 +54,6 @@ logger.exceptions.handle(
   })
 );
 
-/*
-=========================
-GLOBAL REJECTION HANDLING
-=========================
-*/
 
 logger.rejections.handle(
   new winston.transports.File({

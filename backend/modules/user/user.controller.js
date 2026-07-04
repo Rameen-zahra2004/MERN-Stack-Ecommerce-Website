@@ -10,11 +10,6 @@ import {
   USER_MESSAGES,
 } from "./user.constants.js";
 
-/*
-=========================
-CREATE USER
-=========================
-*/
 
 export const createUserController =
   async (req, res, next) => {
@@ -35,11 +30,6 @@ export const createUserController =
     }
   };
 
-/*
-=========================
-GET USER
-=========================
-*/
 
 export const getUserController =
   async (req, res, next) => {
@@ -60,11 +50,6 @@ export const getUserController =
     }
   };
 
-/*
-=========================
-GET ALL USERS
-=========================
-*/
 
 export const getUsersController =
   async (req, res, next) => {
@@ -83,11 +68,6 @@ export const getUsersController =
     }
   };
 
-/*
-=========================
-UPDATE USER
-=========================
-*/
 
 export const updateUserController =
   async (req, res, next) => {
@@ -109,11 +89,6 @@ export const updateUserController =
     }
   };
 
-/*
-=========================
-DELETE USER
-=========================
-*/
 
 export const deleteUserController =
   async (req, res, next) => {

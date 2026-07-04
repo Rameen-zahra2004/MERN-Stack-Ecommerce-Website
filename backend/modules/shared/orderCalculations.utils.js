@@ -15,25 +15,11 @@ const FREE_SHIPPING_THRESHOLD = 5000;
 
 const FLAT_SHIPPING_FEE = 250;
 
-/*
-=========================
-ROUND TO 2 DECIMAL PLACES
-=========================
-Prevents floating-point drift (e.g. 123.45000000000001)
-from being persisted into financial records.
-*/
 
 const roundMoney = (value) => {
   return Number(value.toFixed(2));
 };
 
-/*
-=========================
-CALCULATE ORDER TOTALS
-=========================
-Accepts subtotal and discount, returns tax, shippingFee,
-discount, and totalAmount using consistent rounding.
-*/
 
 export const calculateOrderTotals = ({ subtotal, discount = 0 }) => {
   const safeSubtotal = subtotal || 0;

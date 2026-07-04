@@ -77,9 +77,6 @@ export const createStripePaymentIntent = async (
   };
 };
 
-/**
- * Retrieve a Stripe PaymentIntent (to verify status server-side)
- */
 export const retrieveStripePaymentIntent = async (paymentIntentId) => {
   if (!paymentIntentId) throw new Error("paymentIntentId is required");
   return stripe.paymentIntents.retrieve(paymentIntentId);
@@ -95,8 +92,6 @@ export const createStripeRefund = async (paymentIntentId, amount = null) => {
   const refundData = { payment_intent: paymentIntentId };
   if (amount) refundData.amount = amount;
 
-  // Idempotency: avoid double-refunding on a duplicate request for the
-  // same partial amount within a short window.
   const idempotencyKey = `refund_${paymentIntentId}_${amount || "full"}`;
 
   return stripe.refunds.create(refundData, { idempotencyKey });

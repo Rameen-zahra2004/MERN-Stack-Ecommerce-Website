@@ -9,7 +9,6 @@ const createTransporter = () => {
   const isProduction = process.env.NODE_ENV === "production";
 
   if (isProduction) {
-    // Production: use SendGrid / AWS SES / Mailgun via SMTP relay
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT, 10) || 587,
@@ -24,7 +23,6 @@ const createTransporter = () => {
     });
   }
 
-  // Development: Gmail SMTP with App Password
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -36,7 +34,6 @@ const createTransporter = () => {
 
 export const transporter = createTransporter();
 
-// Verify transporter on startup (non-blocking)
 transporter.verify((error) => {
   if (error) {
     console.error("[Mail] Transporter verification failed:", error.message);

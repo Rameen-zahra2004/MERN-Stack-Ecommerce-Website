@@ -8,19 +8,9 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-MIDDLEWARE
-=========================
-*/
 
 router.use(protect);
 
-/*
-=========================
-ROUTES
-=========================
-*/
 
 router.get("/order/:orderId", getOrderDetailsController);
 

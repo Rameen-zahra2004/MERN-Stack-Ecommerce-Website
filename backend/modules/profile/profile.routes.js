@@ -13,11 +13,6 @@ const router = express.Router();
 
 router.use(protect);
 
-/*
-=========================
-PROFILE ROUTES
-=========================
-*/
 
 router.get("/", getProfileController);
 

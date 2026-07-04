@@ -1,11 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-/*
-==================================================
-FETCH USERS
-==================================================
-*/
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (_, { rejectWithValue }) => {
@@ -18,11 +13,6 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-ADD USER
-==================================================
-*/
 export const addUser = createAsyncThunk(
   "users/addUser",
   async (newUser, { rejectWithValue }) => {
@@ -35,11 +25,6 @@ export const addUser = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-DELETE USER
-==================================================
-*/
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
   async (id, { rejectWithValue }) => {
@@ -52,11 +37,6 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-UPDATE USER
-==================================================
-*/
 export const updateUser = createAsyncThunk(
   "users/updateUser",
   async ({ id, updatedData }, { rejectWithValue }) => {
@@ -69,11 +49,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-BLOCK / UNBLOCK USER  (FIX YOUR ERROR HERE)
-==================================================
-*/
 export const updateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
   async ({ id, status }, { rejectWithValue }) => {
@@ -86,11 +61,6 @@ export const updateUserStatus = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-SLICE
-==================================================
-*/
 const userSlice = createSlice({
   name: "users",
 
@@ -159,9 +129,4 @@ const userSlice = createSlice({
   },
 });
 
-/*
-==================================================
-EXPORT REDUCER
-==================================================
-*/
 export default userSlice.reducer;

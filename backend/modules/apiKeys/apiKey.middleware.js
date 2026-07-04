@@ -1,10 +1,5 @@
 import { validateApiKeyService } from "./apiKeys.service.js";
 
-/*
-=========================
-API KEY AUTH MIDDLEWARE
-=========================
-*/
 
 const apiKeyAuth = async (req, res, next) => {
   try {

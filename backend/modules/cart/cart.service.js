@@ -6,11 +6,6 @@ import { CART_MESSAGES } from "./cart.constants.js";
 
 import { calculateCartTotals } from "./cart.utils.js";
 
-/*
-=========================
-GET USER CART
-=========================
-*/
 
 export const getCartService = async (userId) => {
   let cart = await Cart.findOne({
@@ -30,11 +25,6 @@ export const getCartService = async (userId) => {
   return cart;
 };
 
-/*
-=========================
-ADD TO CART
-=========================
-*/
 
 export const addToCartService = async (userId, productId, quantity) => {
   if (quantity <= 0) {
@@ -89,11 +79,6 @@ export const addToCartService = async (userId, productId, quantity) => {
   return await Cart.findById(cart._id).populate("items.product");
 };
 
-/*
-=========================
-UPDATE CART ITEM
-=========================
-*/
 
 export const updateCartItemService = async (userId, productId, quantity) => {
   const cart = await Cart.findOne({
@@ -121,11 +106,6 @@ export const updateCartItemService = async (userId, productId, quantity) => {
   return await Cart.findById(cart._id).populate("items.product");
 };
 
-/*
-=========================
-REMOVE CART ITEM
-=========================
-*/
 
 export const removeCartItemService = async (userId, productId) => {
   const cart = await Cart.findOne({
@@ -147,11 +127,6 @@ export const removeCartItemService = async (userId, productId) => {
   return cart;
 };
 
-/*
-=========================
-CLEAR CART
-=========================
-*/
 
 export const clearCartService = async (userId) => {
   const cart = await Cart.findOne({
@@ -170,21 +145,7 @@ export const clearCartService = async (userId) => {
 
   return cart;
 };
-/*
-=========================
-ADD THIS TO cart.service.js — append below clearCartService.
-Nothing above this in the existing file changes.
-=========================
-*/
 
-/*
-=========================
-GET ALL CARTS (ADMIN)
-=========================
-Paginated listing across all users. Nothing else in this file provides
-this — every other function is single-user-scoped, so this is genuinely
-new, not a duplicate of anything.
-*/
 export const getAllCartsService = async ({ page = 1, limit = 20 } = {}) => {
   const skip = (page - 1) * limit;
 

@@ -65,11 +65,6 @@ const systemSettingSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-ENSURE SINGLE DOCUMENT
-=========================
-*/
 
 systemSettingSchema.index({ _id: 1 });
 

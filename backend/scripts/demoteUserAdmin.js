@@ -41,8 +41,6 @@ const run = async () => {
       currentRole: before.role,
     });
 
-    // Direct update, bypassing full-document validation (avoids
-    // unrelated legacy-field validation errors like missing firstName/lastName)
     const result = await User.updateOne(
       { email: TARGET_EMAIL },
       { $set: { role: NEW_ROLE } },

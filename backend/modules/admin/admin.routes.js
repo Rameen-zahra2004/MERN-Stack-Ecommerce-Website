@@ -15,17 +15,14 @@ import {
 
 const router = express.Router();
 
-/* ===================== PUBLIC (no auth) ===================== */
 router.post("/login", loginAdminController);
 router.post("/refresh", refreshAdminController);
 
-/* ===================== PROTECTED — any logged-in Admin ===================== */
 router.use(protectAdmin);
 
 router.post("/logout", logoutAdminController);
 router.get("/me", getMeController);
 
-/* ===================== SUPER_ADMIN ONLY — managing other admin accounts ===================== */
 router.get("/", restrictToSuperAdmin, getAdminsController);
 router.get("/:id", restrictToSuperAdmin, getSingleAdminController);
 router.post("/", restrictToSuperAdmin, createAdminController);

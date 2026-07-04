@@ -5,11 +5,6 @@ import {
 
 import logger from "./logger.js";
 
-/*
-=========================
-CACHE MIDDLEWARE FACTORY
-=========================
-*/
 
 const cacheMiddleware = (
   keyGenerator,
@@ -17,18 +12,8 @@ const cacheMiddleware = (
 ) => {
   return async (req, res, next) => {
     try {
-      /*
-      =========================
-      GENERATE DYNAMIC CACHE KEY
-      =========================
-      */
       const key = keyGenerator(req);
 
-      /*
-      =========================
-      CHECK CACHE
-      =========================
-      */
       const cachedData =
         await getCache(key);
 
@@ -40,21 +25,11 @@ const cacheMiddleware = (
         });
       }
 
-      /*
-      =========================
-      OVERRIDE res.json SAFELY
-      =========================
-      */
       const originalJson =
         res.json.bind(res);
 
       res.json = async (body) => {
         try {
-          /*
-          =========================
-          ONLY CACHE SUCCESSFUL RESPONSES
-          =========================
-          */
           if (body?.success) {
             await setCache(
               key,
@@ -74,11 +49,6 @@ const cacheMiddleware = (
 
       next();
     } catch (error) {
-      /*
-      =========================
-      FAIL SAFE (NEVER BREAK REQUEST)
-      =========================
-      */
       logger.error(
         "Cache middleware error",
         error

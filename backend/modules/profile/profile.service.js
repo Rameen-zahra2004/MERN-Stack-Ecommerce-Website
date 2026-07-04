@@ -4,11 +4,6 @@ import {
   PROFILE_MESSAGES,
 } from "./profile.constants.js";
 
-/*
-=========================
-GET PROFILE
-=========================
-*/
 
 export const getProfileService =
   async (userId) => {
@@ -27,11 +22,6 @@ export const getProfileService =
     return profile;
   };
 
-/*
-=========================
-UPDATE PROFILE
-=========================
-*/
 
 export const updateProfileService =
   async (userId, payload) => {
@@ -48,11 +38,6 @@ export const updateProfileService =
     return profile;
   };
 
-/*
-=========================
-ADD ADDRESS
-=========================
-*/
 
 export const addAddressService =
   async (userId, address) => {
@@ -80,11 +65,6 @@ export const addAddressService =
     return profile;
   };
 
-/*
-=========================
-DELETE ADDRESS
-=========================
-*/
 
 export const deleteAddressService =
   async (userId, addressId) => {

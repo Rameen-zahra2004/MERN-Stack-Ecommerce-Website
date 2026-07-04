@@ -12,11 +12,6 @@ import {
   ACTIVITY_LOG_MESSAGES,
 } from "./activityLog.constants.js";
 
-/*
-=========================
-GET ACTIVITY LOGS
-=========================
-*/
 
 export const getActivityLogsController =
   async (req, res, next) => {
@@ -52,11 +47,6 @@ export const getActivityLogsController =
     }
   };
 
-/*
-=========================
-CREATE ACTIVITY LOG
-=========================
-*/
 
 export const createActivityLogController =
   async (req, res, next) => {
@@ -95,11 +85,6 @@ export const createActivityLogController =
     }
   };
 
-/*
-=========================
-DELETE ACTIVITY LOG
-=========================
-*/
 
 export const deleteActivityLogController =
   async (req, res, next) => {

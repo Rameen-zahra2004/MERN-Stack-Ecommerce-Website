@@ -11,11 +11,6 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-COMMENT ROUTES
-=========================
-*/
 
 router.get("/:productId", getCommentsController);
 

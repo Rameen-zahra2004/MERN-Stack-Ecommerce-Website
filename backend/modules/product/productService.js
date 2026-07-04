@@ -4,11 +4,6 @@ import { generateSlug } from "./product.utils.js";
 
 import { PRODUCT_MESSAGES } from "./product.constants.js";
 
-/*
-=========================
-CREATE PRODUCT
-=========================
-*/
 
 export const createProductService = async (payload) => {
   const product = await Product.create({
@@ -20,11 +15,6 @@ export const createProductService = async (payload) => {
   return product;
 };
 
-/*
-=========================
-GET ALL PRODUCTS
-=========================
-*/
 
 export const getProductsService = async (query) => {
   const { page = 1, limit = 10, category, search } = query;
@@ -49,11 +39,6 @@ export const getProductsService = async (query) => {
     pages: Math.ceil(total / Number(limit)),
   };
 };
-/*
-=========================
-GET SINGLE PRODUCT
-=========================
-*/
 
 export const getProductService = async (id) => {
   const product = await Product.findById(id);
@@ -65,11 +50,6 @@ export const getProductService = async (id) => {
   return product;
 };
 
-/*
-=========================
-UPDATE PRODUCT
-=========================
-*/
 
 export const updateProductService = async (id, payload) => {
   if (payload.name) {
@@ -88,11 +68,6 @@ export const updateProductService = async (id, payload) => {
   return product;
 };
 
-/*
-=========================
-DELETE PRODUCT (SOFT)
-=========================
-*/
 
 export const deleteProductService = async (id) => {
   const product = await Product.findByIdAndUpdate(

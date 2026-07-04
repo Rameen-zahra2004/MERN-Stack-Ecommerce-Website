@@ -1,20 +1,11 @@
 import { verifyAccessToken } from "./authUtils.js";
 import User from "../user/User.model.js";
 
-/**
- * auth.middleware.js
- * Express middleware for The 999 Boxs authentication system.
- *
- * Usage:
- *   router.get("/profile", protect, getProfile)
- *   router.delete("/user/:id", protect, restrictTo("admin"), deleteUser)
- */
 
 // ─── PROTECT: Verify JWT + attach user ────────────────────────────────────────
 
 export const protect = async (req, res, next) => {
   try {
-    // 1. Extract token from HTTP-only cookie (primary) or Authorization header (fallback)
     let token = req.cookies?.accessToken;
 
     if (!token && req.headers.authorization?.startsWith("Bearer ")) {
@@ -43,7 +34,6 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    // 3. Fetch fresh user from DB (catches deleted/deactivated users)
     const user = await User.findById(decoded.id);
 
     if (!user) {

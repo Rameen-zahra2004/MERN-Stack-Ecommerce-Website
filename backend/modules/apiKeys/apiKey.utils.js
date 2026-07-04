@@ -1,10 +1,5 @@
 import crypto from "crypto";
 
-/*
-=========================
-GENERATE API KEY
-=========================
-*/
 
 export const generateApiKey =
   () => {
@@ -12,11 +7,6 @@ export const generateApiKey =
       .toString("hex");
   };
 
-/*
-=========================
-HASH API KEY
-=========================
-*/
 
 export const hashApiKey = (
   key

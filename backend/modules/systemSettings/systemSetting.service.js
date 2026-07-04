@@ -4,11 +4,6 @@ import {
   ensureSingleDocument,
 } from "./systemSetting.utils.js";
 
-/*
-=========================
-GET SETTINGS (SINGLETON)
-=========================
-*/
 
 export const getSystemSettingService =
   async () => {
@@ -20,11 +15,6 @@ export const getSystemSettingService =
     return settings;
   };
 
-/*
-=========================
-UPDATE SETTINGS
-=========================
-*/
 
 export const updateSystemSettingService =
   async (payload, userId) => {

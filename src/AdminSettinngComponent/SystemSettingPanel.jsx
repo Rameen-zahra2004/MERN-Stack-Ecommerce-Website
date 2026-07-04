@@ -37,10 +37,6 @@ export default function SystemSettingsPanel({ system: systemProp }) {
     }
   }, [system]);
 
-  // ✅ REMOVED the loop-causing useEffect:
-  // useEffect(() => {
-  //   if (!systemFromStore && !systemProp) dispatch(fetchSystem()); ← caused infinite loop
-  // }, [dispatch, systemFromStore, systemProp]);
 
   const triggerMessage = (type, text) => {
     setMessage({ type, text });

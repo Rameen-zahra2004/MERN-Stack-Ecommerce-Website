@@ -7,11 +7,6 @@ import { ACTIVE_USER_MESSAGES } from "./activeUser.constants.js";
 
 import { createActiveUserValidation } from "./activeUser.validation.js";
 
-/*
-=========================
-GET ACTIVE USERS
-=========================
-*/
 
 export const getActiveUsersController =
   async (req, res, next) => {
@@ -38,11 +33,6 @@ export const getActiveUsersController =
     }
   };
 
-/*
-=========================
-CREATE ACTIVE USER
-=========================
-*/
 
 export const createActiveUserController =
   async (req, res, next) => {

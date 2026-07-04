@@ -15,11 +15,6 @@ import {
   CART_MESSAGES,
 } from "./cart.constants.js";
 
-/*
-=========================
-GET CART
-=========================
-*/
 
 export const getCartController =
   async (req, res, next) => {
@@ -40,11 +35,6 @@ export const getCartController =
     }
   };
 
-/*
-=========================
-ADD TO CART
-=========================
-*/
 
 export const addToCartController =
   async (req, res, next) => {
@@ -84,11 +74,6 @@ export const addToCartController =
     }
   };
 
-/*
-=========================
-UPDATE CART ITEM
-=========================
-*/
 
 export const updateCartItemController =
   async (req, res, next) => {
@@ -128,11 +113,6 @@ export const updateCartItemController =
     }
   };
 
-/*
-=========================
-REMOVE CART ITEM
-=========================
-*/
 
 export const removeCartItemController =
   async (req, res, next) => {
@@ -154,11 +134,6 @@ export const removeCartItemController =
     }
   };
 
-/*
-=========================
-CLEAR CART
-=========================
-*/
 
 export const clearCartController =
   async (req, res, next) => {

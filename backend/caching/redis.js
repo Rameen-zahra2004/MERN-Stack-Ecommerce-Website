@@ -1,21 +1,11 @@
 import { createClient } from "redis";
 import logger from "./logger.js";
 
-/*
-=========================
-REDIS CLIENT
-=========================
-*/
 
 const redisClient = createClient({
   url: process.env.REDIS_URL,
   socket: {
     reconnectStrategy: (retries) => {
-      /*
-      =========================
-      AUTO RECONNECT BACKOFF
-      =========================
-      */
       if (retries > 10) {
         logger.error(
           "Redis max retry attempts reached"
@@ -33,11 +23,6 @@ const redisClient = createClient({
   },
 });
 
-/*
-=========================
-EVENT HANDLERS
-=========================
-*/
 
 redisClient.on("connect", () => {
   logger.info("Redis connecting...");
@@ -58,11 +43,6 @@ redisClient.on("end", () => {
   logger.warn("Redis connection closed");
 });
 
-/*
-=========================
-CONNECT FUNCTION
-=========================
-*/
 
 export const connectRedis = async () => {
   try {
@@ -86,10 +66,5 @@ export const connectRedis = async () => {
   }
 };
 
-/*
-=========================
-EXPORT CLIENT
-=========================
-*/
 
 export default redisClient;

@@ -53,11 +53,6 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-INDEXES
-=========================
-*/
 
 commentSchema.index({ product: 1, createdAt: -1 });
 commentSchema.index({ user: 1 });

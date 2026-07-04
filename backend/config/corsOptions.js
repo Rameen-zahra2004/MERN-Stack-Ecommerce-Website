@@ -1,10 +1,5 @@
 import logger from "./logger.js";
 
-/*
-=========================
-PARSE ALLOWED ORIGINS
-=========================
-*/
 
 const allowedOrigins = (
   process.env.CORS_ORIGIN || ""
@@ -13,43 +8,18 @@ const allowedOrigins = (
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-/*
-=========================
-CORS OPTIONS (PRODUCTION-GRADE)
-=========================
-*/
 
 const corsOptions = {
-  /*
-  =========================
-  ORIGIN VALIDATION
-  =========================
-  */
   origin: (origin, callback) => {
     try {
-      /*
-      =========================
-      ALLOW NON-BROWSER REQUESTS (POSTMAN / MOBILE / SERVER)
-      =========================
-      */
       if (!origin) {
         return callback(null, true);
       }
 
-      /*
-      =========================
-      ALLOW IF ORIGIN IS WHITELISTED
-      =========================
-      */
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      /*
-      =========================
-      BLOCK + LOG UNAUTHORIZED ORIGIN
-      =========================
-      */
       logger.warn(
         `CORS BLOCKED: ${origin}`
       );
@@ -61,11 +31,6 @@ const corsOptions = {
         false
       );
     } catch (error) {
-      /*
-      =========================
-      SAFETY FALLBACK (NEVER CRASH SERVER)
-      =========================
-      */
       logger.error(
         "CORS middleware error",
         error
@@ -75,11 +40,6 @@ const corsOptions = {
     }
   },
 
-  /*
-  =========================
-  SECURITY SETTINGS
-  =========================
-  */
   credentials: true,
 
   methods: [
@@ -99,18 +59,8 @@ const corsOptions = {
 
   exposedHeaders: ["Set-Cookie"],
 
-  /*
-  =========================
-  PRE-FLIGHT CACHE
-  =========================
-  */
   maxAge: 86400, // 24 hours
 
-  /*
-  =========================
-  LEGACY BROWSER SUPPORT
-  =========================
-  */
   optionsSuccessStatus: 200,
 };
 

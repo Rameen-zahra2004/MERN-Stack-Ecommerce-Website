@@ -14,11 +14,6 @@ import {
   COMMENT_MESSAGES,
 } from "./comment.constants.js";
 
-/*
-=========================
-GET COMMENTS
-=========================
-*/
 
 export const getCommentsController =
   async (req, res, next) => {
@@ -39,11 +34,6 @@ export const getCommentsController =
     }
   };
 
-/*
-=========================
-CREATE COMMENT
-=========================
-*/
 
 export const createCommentController =
   async (req, res, next) => {
@@ -92,11 +82,6 @@ export const createCommentController =
     }
   };
 
-/*
-=========================
-UPDATE COMMENT
-=========================
-*/
 
 export const updateCommentController =
   async (req, res, next) => {
@@ -136,11 +121,6 @@ export const updateCommentController =
     }
   };
 
-/*
-=========================
-DELETE COMMENT
-=========================
-*/
 
 export const deleteCommentController =
   async (req, res, next) => {

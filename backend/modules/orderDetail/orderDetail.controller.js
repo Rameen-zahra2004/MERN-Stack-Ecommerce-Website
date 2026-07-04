@@ -7,11 +7,6 @@ import {
   ORDER_DETAIL_MESSAGES,
 } from "./orderDetail.constants.js";
 
-/*
-=========================
-ORDER DETAILS BY ORDER
-=========================
-*/
 
 export const getOrderDetailsController =
   async (req, res, next) => {
@@ -32,11 +27,6 @@ export const getOrderDetailsController =
     }
   };
 
-/*
-=========================
-USER ORDER HISTORY (ITEM LEVEL)
-=========================
-*/
 
 export const getUserOrderDetailsController =
   async (req, res, next) => {

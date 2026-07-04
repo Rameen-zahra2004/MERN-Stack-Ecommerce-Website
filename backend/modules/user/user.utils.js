@@ -1,10 +1,5 @@
 import bcrypt from "bcrypt";
 
-/*
-=========================
-HASH PASSWORD
-=========================
-*/
 
 export const hashPassword =
   async (password) => {
@@ -14,11 +9,6 @@ export const hashPassword =
     );
   };
 
-/*
-=========================
-COMPARE PASSWORD
-=========================
-*/
 
 export const comparePassword =
   async (password, hashed) => {

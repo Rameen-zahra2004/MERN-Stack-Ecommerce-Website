@@ -1,11 +1,6 @@
 import ActiveUser from "./ActiveUser.model.js";
 import { ACTIVE_USER_MESSAGES } from "./activeUser.constants.js";
 
-/*
-=========================
-GET ALL ACTIVE USERS
-=========================
-*/
 
 export const getActiveUsersService = async ({
   page = 1,
@@ -32,11 +27,6 @@ export const getActiveUsersService = async ({
   };
 };
 
-/*
-=========================
-CREATE ACTIVE USER
-=========================
-*/
 
 export const createActiveUserService = async (
   payload
@@ -49,11 +39,6 @@ export const createActiveUserService = async (
 
   const { count, recordedAt } = payload;
 
-  /*
-  =========================
-  BUSINESS RULE VALIDATION
-  =========================
-  */
 
   if (count < 0) {
     throw new Error(

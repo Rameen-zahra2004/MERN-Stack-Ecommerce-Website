@@ -1,26 +1,14 @@
 import jwt from "jsonwebtoken";
 import env from "../config/env.js";
 
-/*
-=========================
-TOKEN PAYLOAD BUILDER
-=========================
-*/
 
 const buildPayload = (userId, type) => {
   return {
     id: userId,
-    // keep type field intentionally unused by auth middleware
-    // (avoid changing token expiry/secret/cookie logic)
     type, // access | refresh
   };
 };
 
-/*
-=========================
-ACCESS TOKEN (SHORT-LIVED)
-=========================
-*/
 
 export const generateAccessToken = (userId) => {
   try {
@@ -32,11 +20,6 @@ export const generateAccessToken = (userId) => {
   }
 };
 
-/*
-=========================
-REFRESH TOKEN (LONG-LIVED)
-=========================
-*/
 
 export const generateRefreshToken = (userId) => {
   try {

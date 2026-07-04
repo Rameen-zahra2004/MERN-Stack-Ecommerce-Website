@@ -1,10 +1,5 @@
 import logger from "../config/logger.js";
 
-/*
-=========================
-PAYMENT PROVIDERS
-=========================
-*/
 
 const PAYMENT_STATUS = {
   PAID: "paid",
@@ -13,11 +8,6 @@ const PAYMENT_STATUS = {
   COD: "cod",
 };
 
-/*
-=========================
-PROCESS PAYMENT SERVICE
-=========================
-*/
 
 export const processPayment = async (
   method,
@@ -31,11 +21,6 @@ export const processPayment = async (
       );
     }
 
-    /*
-    =========================
-    STRIPE PAYMENT (SIMULATED)
-    =========================
-    */
     if (method === "stripe") {
       return {
         status: PAYMENT_STATUS.PAID,
@@ -46,11 +31,6 @@ export const processPayment = async (
       };
     }
 
-    /*
-    =========================
-    JAZZCASH PAYMENT (SIMULATED)
-    =========================
-    */
     if (method === "jazzcash") {
       return {
         status: PAYMENT_STATUS.PENDING,
@@ -61,11 +41,6 @@ export const processPayment = async (
       };
     }
 
-    /*
-    =========================
-    CASH ON DELIVERY (DEFAULT)
-    =========================
-    */
     return {
       status: PAYMENT_STATUS.COD,
       provider: "cash",

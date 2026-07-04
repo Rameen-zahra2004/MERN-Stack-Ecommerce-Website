@@ -10,11 +10,6 @@ export const generateSlug =
       .replace(/(^-|-$)/g, "");
   };
 
-/*
-=========================
-PRICE CALCULATION HELPER
-=========================
-*/
 
 export const calculateDiscount =
   (price, comparePrice) => {

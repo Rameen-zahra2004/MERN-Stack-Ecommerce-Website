@@ -8,11 +8,6 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-ADMIN ONLY (YOU SHOULD ADD ROLE CHECK LATER)
-=========================
-*/
 
 router.get("/", protect, getRevenueController);
 

@@ -1,16 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import dashboardApi from "../api/dashboardApi";
 
-// No BASE prefix needed — dashboardApi's baseURL is already
-// http://localhost:5000/api/dashboard
 
-/*
-=========================
-THUNKS — one per backend endpoint, no combining, so loading/error
-states stay independent per widget (a slow chart shouldn't block
-the summary cards from rendering).
-=========================
-*/
 
 export const fetchDashboardSummary = createAsyncThunk(
   "dashboard/fetchSummary",
@@ -132,14 +123,6 @@ export const fetchMonthlyChart = createAsyncThunk(
   },
 );
 
-/*
-=========================
-INITIAL STATE
-=========================
-Shape intentionally mirrors backend response field names 1:1
-(no renaming/transforming in the slice) so components can reference
-state.dashboard.summary.totalRevenue etc. without a translation layer.
-*/
 
 const initialState = {
   summary: null,
@@ -182,12 +165,6 @@ const initialState = {
   },
 };
 
-/*
-=========================
-HELPER — builds the three extraReducers cases for a given thunk +
-state key, so we're not hand-writing 30 near-identical case blocks.
-=========================
-*/
 const addThunkCases = (builder, thunk, key) => {
   builder
     .addCase(thunk.pending, (state) => {

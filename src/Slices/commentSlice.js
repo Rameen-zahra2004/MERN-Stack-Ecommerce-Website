@@ -1,31 +1,3 @@
-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import api from "../api";
-// export const fetchComments = createAsyncThunk("comments/fetch", async (_, { rejectWithValue }) => {
-//   try { const res = await api.get("/comments"); return res.data; }
-//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
-// });
-// export const addComment = createAsyncThunk("comments/add", async (comment, { rejectWithValue }) => {
-//   try { const res = await api.post("/comments", comment); return res.data; }
-//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
-// });
-// export const deleteComment = createAsyncThunk("comments/delete", async (id, { rejectWithValue }) => {
-//   try { await api.delete(`/comments/${id}`); return id; }
-//   catch (err) { return rejectWithValue(err.response?.data?.message || "Failed"); }
-// });
-// const commentSlice = createSlice({
-//   name: "comments",
-//   initialState: { comments: [], loading: false, error: null },
-//   reducers: {},
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchComments.pending, (s) => { s.loading = true; })
-//       .addCase(fetchComments.fulfilled, (s, a) => { s.loading = false; s.comments = a.payload; })
-//       .addCase(fetchComments.rejected, (s, a) => { s.loading = false; s.error = a.payload; })
-//       .addCase(addComment.fulfilled, (s, a) => { s.comments.push(a.payload); })
-//       .addCase(deleteComment.fulfilled, (s, a) => { s.comments = s.comments.filter((c) => c._id !== a.payload); });
-//   },
-// });
-// export default commentSlice.reducer;
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 

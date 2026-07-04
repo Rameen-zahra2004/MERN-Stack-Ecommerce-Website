@@ -14,11 +14,6 @@ import {
 
 import { CART_MESSAGES } from "./cart.constants.js";
 
-/*
-=========================
-LIST ALL CARTS (ADMIN)
-=========================
-*/
 export const getAllCartsController = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
@@ -36,13 +31,6 @@ export const getAllCartsController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-GET ONE USER'S CART (ADMIN)
-=========================
-Reuses getCartService exactly as the user-facing controller does —
-only difference is the ID comes from the route param, not req.user.
-*/
 export const getCartByUserIdController = async (req, res, next) => {
   try {
     const result = await getCartService(req.params.userId);
@@ -57,11 +45,6 @@ export const getCartByUserIdController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-ADD ITEM TO A USER'S CART (ADMIN)
-=========================
-*/
 export const adminAddToCartController = async (req, res, next) => {
   try {
     const { error, value } = addToCartValidation.validate(req.body, {
@@ -91,11 +74,6 @@ export const adminAddToCartController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-UPDATE ITEM IN A USER'S CART (ADMIN)
-=========================
-*/
 export const adminUpdateCartItemController = async (req, res, next) => {
   try {
     const { error, value } = updateCartValidation.validate(req.body, {
@@ -125,11 +103,6 @@ export const adminUpdateCartItemController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-REMOVE ITEM FROM A USER'S CART (ADMIN)
-=========================
-*/
 export const adminRemoveCartItemController = async (req, res, next) => {
   try {
     const result = await removeCartItemService(
@@ -147,11 +120,6 @@ export const adminRemoveCartItemController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-CLEAR A USER'S CART (ADMIN)
-=========================
-*/
 export const adminClearCartController = async (req, res, next) => {
   try {
     const result = await clearCartService(req.params.userId);

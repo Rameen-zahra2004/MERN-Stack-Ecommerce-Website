@@ -1,141 +1,3 @@
-// import Product from "./product.model.js";
-
-// /*
-// =========================
-// UPLOAD IMAGES
-// =========================
-// */
-// export const uploadProductImagesController = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-
-//     const product = await Product.findById(id);
-
-//     if (!product) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found",
-//       });
-//     }
-
-//     if (!req.files || req.files.length === 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "No images uploaded",
-//       });
-//     }
-
-//     const images = req.files.map((file, index) => ({
-//       url: `/uploads/${file.filename}`,
-//       filename: file.filename,
-//       mimeType: file.mimetype,
-//       size: file.size,
-//       isPrimary: product.images.length === 0 && index === 0,
-//       order: product.images.length + index,
-//     }));
-
-//     product.images.push(...images);
-
-//     await product.save();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Images uploaded successfully",
-//       data: product,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// /*
-// =========================
-// DELETE IMAGE
-// =========================
-// */
-// export const deleteProductImageController = async (req, res, next) => {
-//   try {
-//     const { id, imageId } = req.params;
-
-//     const product = await Product.findById(id);
-
-//     if (!product) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found",
-//       });
-//     }
-
-//     const imageIndex = product.images.findIndex(
-//       (img) => img._id.toString() === imageId,
-//     );
-
-//     if (imageIndex === -1) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Image not found",
-//       });
-//     }
-
-//     const removed = product.images[imageIndex];
-
-//     product.images.splice(imageIndex, 1);
-
-//     if (removed.isPrimary && product.images.length > 0) {
-//       product.images[0].isPrimary = true;
-//     }
-
-//     await product.save();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Image deleted successfully",
-//       data: product,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// /*
-// =========================
-// REORDER IMAGES
-// =========================
-// */
-// export const reorderProductImagesController = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const { order } = req.body; // array of image IDs
-
-//     const product = await Product.findById(id);
-
-//     if (!product) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found",
-//       });
-//     }
-
-//     product.images.sort(
-//       (a, b) =>
-//         order.indexOf(a._id.toString()) - order.indexOf(b._id.toString()),
-//     );
-
-//     product.images.forEach((img, index) => {
-//       img.order = index;
-//     });
-
-//     await product.save();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Images reordered successfully",
-//       data: product,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 import fs from "fs";
 import path from "path";
 import Product from "./product.model.js";
@@ -143,11 +5,6 @@ import { MAX_IMAGES_PER_PRODUCT } from "../../middleware/upload.js";
 
 const UPLOADS_DIR = path.resolve("uploads");
 
-/*
-=========================
-UPLOAD IMAGES
-=========================
-*/
 export const uploadProductImagesController = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -207,11 +64,6 @@ export const uploadProductImagesController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-DELETE IMAGE
-=========================
-*/
 export const deleteProductImageController = async (req, res, next) => {
   try {
     const { id, imageId } = req.params;
@@ -263,11 +115,6 @@ export const deleteProductImageController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-REORDER IMAGES
-=========================
-*/
 export const reorderProductImagesController = async (req, res, next) => {
   try {
     const { id } = req.params;

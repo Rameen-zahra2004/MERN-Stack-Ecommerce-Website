@@ -4,11 +4,6 @@ import {
   COMMENT_MESSAGES,
 } from "./comment.constants.js";
 
-/*
-=========================
-GET COMMENTS BY PRODUCT
-=========================
-*/
 
 export const getCommentsService =
   async (productId) => {
@@ -27,11 +22,6 @@ export const getCommentsService =
     return comments;
   };
 
-/*
-=========================
-CREATE COMMENT
-=========================
-*/
 
 export const createCommentService =
   async (payload) => {
@@ -41,11 +31,6 @@ export const createCommentService =
     return comment;
   };
 
-/*
-=========================
-UPDATE COMMENT
-=========================
-*/
 
 export const updateCommentService =
   async (commentId, userId, text) => {
@@ -78,11 +63,6 @@ export const updateCommentService =
     return comment;
   };
 
-/*
-=========================
-DELETE COMMENT (SOFT DELETE)
-=========================
-*/
 
 export const deleteCommentService =
   async (commentId, userId) => {

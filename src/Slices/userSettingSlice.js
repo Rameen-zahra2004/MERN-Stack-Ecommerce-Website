@@ -1,8 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-/* =========================
-   FETCH USER PROFILE
-========================= */
 export const fetchUser = createAsyncThunk(
   "userSettings/fetchUser",
   async (_, { getState, rejectWithValue }) => {
@@ -28,9 +25,6 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
-/* =========================
-   UPDATE USER PROFILE
-========================= */
 export const updateUser = createAsyncThunk(
   "userSettings/updateUser",
   async (updatedUser, { getState, rejectWithValue }) => {
@@ -61,9 +55,6 @@ export const updateUser = createAsyncThunk(
   }
 );
 
-/* =========================
-   SLICE
-========================= */
 const userSettingsSlice = createSlice({
   name: "userSettings",
   initialState: {

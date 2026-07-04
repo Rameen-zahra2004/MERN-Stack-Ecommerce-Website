@@ -2,11 +2,6 @@ import ActivityLog from "./ActivityLog.model.js";
 
 import { ACTIVITY_LOG_MESSAGES } from "./activityLog.constants.js";
 
-/*
-=========================
-GET ACTIVITY LOGS
-=========================
-*/
 
 export const getActivityLogsService =
   async ({
@@ -55,11 +50,6 @@ export const getActivityLogsService =
     };
   };
 
-/*
-=========================
-CREATE ACTIVITY LOG
-=========================
-*/
 
 export const createActivityLogService =
   async (payload) => {
@@ -81,11 +71,6 @@ export const createActivityLogService =
     return activityLog;
   };
 
-/*
-=========================
-DELETE ACTIVITY LOG
-=========================
-*/
 
 export const deleteActivityLogService =
   async (id) => {

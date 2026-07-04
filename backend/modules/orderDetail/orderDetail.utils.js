@@ -18,11 +18,6 @@ export const buildOrderDetailPayload =
     }));
   };
 
-/*
-=========================
-CALCULATE ITEM TOTALS
-=========================
-*/
 
 export const calculateItemTotal =
   (quantity, price) => {

@@ -10,11 +10,6 @@ import { createOrderValidation } from "./order.validation.js";
 
 import { ORDER_MESSAGES } from "./order.constants.js";
 
-/*
-=========================
-CREATE ORDER
-=========================
-*/
 
 export const createOrderController = async (req, res, next) => {
   try {
@@ -45,11 +40,6 @@ export const createOrderController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-GET ORDERS
-=========================
-*/
 
 export const getOrdersController = async (req, res, next) => {
   try {
@@ -65,11 +55,6 @@ export const getOrdersController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-GET SINGLE ORDER (CUSTOMER)
-=========================
-*/
 
 export const getSingleOrderController = async (req, res, next) => {
   try {
@@ -85,14 +70,6 @@ export const getSingleOrderController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-GET SINGLE ORDER (ADMIN)
-=========================
-Route-level access control (protect + restrictTo("admin")) is
-the only thing preventing unrestricted access here. This
-controller performs no ownership check by design.
-*/
 
 export const getSingleOrderAdminController = async (req, res, next) => {
   try {
@@ -108,11 +85,6 @@ export const getSingleOrderAdminController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-CANCEL ORDER
-=========================
-*/
 
 export const cancelOrderController = async (req, res, next) => {
   try {

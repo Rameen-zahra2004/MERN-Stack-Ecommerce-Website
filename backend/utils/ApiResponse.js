@@ -5,38 +5,17 @@ class ApiResponse {
     message = "success",
     meta = null
   ) {
-    /*
-    =========================
-    CORE RESPONSE DATA
-    =========================
-    */
     this.statusCode = statusCode;
     this.data = data;
     this.message = message;
 
-    /*
-    =========================
-    SUCCESS FLAG
-    =========================
-    */
     this.success = statusCode < 400;
 
-    /*
-    =========================
-    OPTIONAL METADATA
-    (pagination, counts, etc.)
-    =========================
-    */
     if (meta) {
       this.meta = meta;
     }
   }
 
-  /*
-  =========================
-  FORMAT OUTPUT (SAFE JSON)
-  =========================
-  */
   toJSON() {
     const response = {
       success: this.success,

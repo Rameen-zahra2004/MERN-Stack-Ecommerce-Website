@@ -10,7 +10,6 @@ import {
 } from "./payment.service.js";
 import Order from "../orders/order.model.js";
 
-// Helper: load order AND verify it belongs to the requesting user (unless admin)
 const getOwnedOrder = async (orderId, user) => {
   const order = await Order.findById(orderId);
   if (!order)
@@ -34,10 +33,6 @@ const getOwnedOrder = async (orderId, user) => {
 //  STRIPE CONTROLLERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * POST /api/payments/stripe/intent
- * Body: { orderId }
- */
 export const stripeCreateIntent = asyncHandler(async (req, res) => {
   const { orderId } = req.body;
   if (!orderId) return res.status(400).json({ message: "orderId is required" });
@@ -52,7 +47,6 @@ export const stripeCreateIntent = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Order already paid" });
   }
 
-  // Idempotency: reuse existing intent if one is already pending for this order
   if (order.paymentIntentId) {
     try {
       const existing = await retrieveStripePaymentIntent(order.paymentIntentId);
@@ -81,10 +75,6 @@ export const stripeCreateIntent = asyncHandler(async (req, res) => {
   res.json({ clientSecret });
 });
 
-/**
- * POST /api/payments/stripe/verify
- * Body: { paymentIntentId }
- */
 export const stripeVerifyPayment = asyncHandler(async (req, res) => {
   const { paymentIntentId } = req.body;
   if (!paymentIntentId) {
@@ -120,10 +110,6 @@ export const stripeVerifyPayment = asyncHandler(async (req, res) => {
   res.json({ success: false, status: intent.status });
 });
 
-/**
- * POST /api/payments/stripe/refund
- * Body: { orderId, amount? }  (amount in cents, omit for full refund)
- */
 export const stripeRefund = asyncHandler(async (req, res) => {
   const { orderId, amount } = req.body;
 
@@ -149,11 +135,6 @@ export const stripeRefund = asyncHandler(async (req, res) => {
   res.json({ success: true, refundId: refund.id });
 });
 
-/**
- * POST /api/payments/stripe/webhook
- * IMPORTANT: mount with express.raw({ type: "application/json" }) BEFORE
- * any express.json() middleware on this specific route — see router file.
- */
 export const stripeWebhook = (req, res) => {
   const sig = req.headers["stripe-signature"];
 
@@ -209,10 +190,6 @@ const handleStripeFailure = async (intent) => {
 //  PAYPAL CONTROLLERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * POST /api/payments/paypal/create-order
- * Body: { orderId }
- */
 export const paypalCreateOrder = asyncHandler(async (req, res) => {
   const { orderId } = req.body;
   if (!orderId) return res.status(400).json({ message: "orderId is required" });
@@ -255,10 +232,6 @@ export const paypalCreateOrder = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * POST /api/payments/paypal/capture
- * Body: { paypalOrderId }
- */
 export const paypalCaptureOrder = asyncHandler(async (req, res) => {
   const { paypalOrderId } = req.body;
   if (!paypalOrderId) {
@@ -281,7 +254,6 @@ export const paypalCaptureOrder = asyncHandler(async (req, res) => {
       .json({ message: "You do not have access to this order" });
   }
 
-  // Idempotency: if already captured/paid, don't capture twice
   if (order.paymentStatus === "paid") {
     return res.json({
       success: true,
@@ -319,10 +291,6 @@ export const paypalCaptureOrder = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * POST /api/payments/paypal/refund
- * Body: { orderId, amount? }
- */
 export const paypalRefund = asyncHandler(async (req, res) => {
   const { orderId, amount } = req.body;
 

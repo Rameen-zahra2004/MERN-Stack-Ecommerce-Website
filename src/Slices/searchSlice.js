@@ -10,7 +10,6 @@ export const fetchSearchResults = createAsyncThunk(
     );
     const data = await response.json();
 
-    // DummyJSON returns { products: [...] }
     return data.products.map((item) => ({
       id: item.id,
       title: item.title,

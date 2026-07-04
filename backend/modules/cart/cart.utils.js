@@ -1,13 +1,5 @@
 import { calculateOrderTotals } from "../shared/orderCalculations.utils.js";
 
-/*
-=========================
-CALCULATE CART TOTALS
-=========================
-Mutates the cart object in place with updated item counts
-and financial totals, using the shared calculation utility
-as the single source of truth for tax/shipping/total math.
-*/
 
 export const calculateCartTotals = (cart) => {
   cart.totalItems = cart.items.length;

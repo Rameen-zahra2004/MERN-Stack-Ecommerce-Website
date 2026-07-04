@@ -98,13 +98,6 @@ export const getDashboardSummaryService = async () => {
   };
 };
 
-/*
-=========================
-REVENUE ANALYTICS
-=========================
-Today / Week / Month / Year totals in one $facet pass, plus a 12-month
-trend series for charting.
-*/
 export const getRevenueAnalyticsService = async () => {
   const today = getTodayRange();
   const week = getWeekRange();
@@ -185,11 +178,6 @@ export const getRevenueAnalyticsService = async () => {
   };
 };
 
-/*
-=========================
-SALES ANALYTICS (order counts, not $ revenue)
-=========================
-*/
 export const getSalesAnalyticsService = async () => {
   const today = getTodayRange();
   const week = getWeekRange();
@@ -253,11 +241,6 @@ export const getSalesAnalyticsService = async () => {
   };
 };
 
-/*
-=========================
-RECENT ORDERS
-=========================
-*/
 export const getRecentOrdersService = async () => {
   const orders = await Order.find({})
     .sort({ createdAt: -1 })
@@ -266,8 +249,6 @@ export const getRecentOrdersService = async () => {
     .select("user status totalAmount createdAt")
     .lean();
 
-  // Same virtual-stripping issue as getLatestCustomersService — populate()
-  // + lean() returns a plain object for the populated user too.
   return orders.map((order) => ({
     ...order,
     user: order.user
@@ -279,11 +260,6 @@ export const getRecentOrdersService = async () => {
   }));
 };
 
-/*
-=========================
-LATEST CUSTOMERS
-=========================
-*/
 export const getLatestCustomersService = async () => {
   const users = await User.find({ role: "user" })
     .sort({ createdAt: -1 })
@@ -300,11 +276,6 @@ export const getLatestCustomersService = async () => {
   }));
 };
 
-/*
-=========================
-CUSTOMER GROWTH (new users per month, trailing 12 months)
-=========================
-*/
 export const getCustomerGrowthService = async () => {
   const monthBuckets = getTrailingMonthBuckets(MONTHS_IN_CHART);
 
@@ -337,11 +308,6 @@ export const getCustomerGrowthService = async () => {
   }));
 };
 
-/*
-=========================
-LOW STOCK PRODUCTS
-=========================
-*/
 export const getLowStockProductsService = async () => {
   return Product.find({ isActive: true, stock: { $lt: LOW_STOCK_THRESHOLD } })
     .sort({ stock: 1 })
@@ -350,13 +316,6 @@ export const getLowStockProductsService = async () => {
     .lean();
 };
 
-/*
-=========================
-TOP SELLING PRODUCTS
-=========================
-Aggregates from Order.items[] (embedded), NOT the Product collection —
-per your rule. Ranked by quantity sold.
-*/
 export const getTopSellingProductsService = async () => {
   return Order.aggregate([
     { $match: REVENUE_MATCH },
@@ -383,11 +342,6 @@ export const getTopSellingProductsService = async () => {
   ]);
 };
 
-/*
-=========================
-ORDER STATUS ANALYTICS
-=========================
-*/
 export const getOrderStatusAnalyticsService = async () => {
   const results = await Order.aggregate([
     { $group: { _id: "$status", count: { $sum: 1 } } },
@@ -406,11 +360,6 @@ export const getOrderStatusAnalyticsService = async () => {
   }, {});
 };
 
-/*
-=========================
-MONTHLY CHART (orders + revenue combined, chart-library ready)
-=========================
-*/
 export const getMonthlyChartService = async () => {
   const monthBuckets = getTrailingMonthBuckets(MONTHS_IN_CHART);
 

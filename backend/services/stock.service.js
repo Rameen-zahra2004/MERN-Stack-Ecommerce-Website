@@ -1,11 +1,6 @@
 import Product from "../models/Product.js";
 import logger from "../config/logger.js";
 
-/*
-=========================
-DECREASE STOCK (ATOMIC SAFE VERSION)
-=========================
-*/
 
 export const decreaseStock = async (
   items,
@@ -18,20 +13,10 @@ export const decreaseStock = async (
       );
     }
 
-    /*
-    =========================
-    PROCESS EACH ITEM SAFELY
-    =========================
-    */
     for (const item of items) {
       const { productId, quantity } =
         item;
 
-      /*
-      =========================
-      ATOMIC STOCK DECREMENT
-      =========================
-      */
       const product =
         await Product.findOneAndUpdate(
           {
@@ -51,11 +36,6 @@ export const decreaseStock = async (
           }
         );
 
-      /*
-      =========================
-      VALIDATION
-      =========================
-      */
       if (!product) {
         throw new Error(
           `Insufficient stock or product not found: ${productId}`

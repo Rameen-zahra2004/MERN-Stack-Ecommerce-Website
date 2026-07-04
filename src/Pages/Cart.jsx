@@ -24,12 +24,10 @@ export default function UserCartPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ← products from productSlice (dummyjson)
   const { items: products = [], loading: productsLoading } = useSelector(
     (state) => state.products,
   );
 
-  // ← cart from cartSlice (localStorage)
   const {
     cart = [],
     loading: cartLoading,

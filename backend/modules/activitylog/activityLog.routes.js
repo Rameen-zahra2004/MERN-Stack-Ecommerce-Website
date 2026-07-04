@@ -5,11 +5,6 @@ import { getActivityLogsController } from "./activityLog.controller.js";
 
 const router = express.Router();
 
-/*
-=========================
-ACTIVITY LOG ROUTES
-=========================
-*/
 
 // FIX (C6): require admin auth to even read logs
 router.use(protect, restrictTo("admin"));

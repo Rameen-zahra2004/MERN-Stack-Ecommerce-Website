@@ -9,11 +9,6 @@ import { createApiKeyValidation } from "./apiKey.validation.js";
 
 import { API_KEY_MESSAGES } from "./apiKey.constants.js";
 
-/*
-=========================
-GET API KEYS
-=========================
-*/
 
 export const getApiKeysController = async (req, res, next) => {
   try {
@@ -32,11 +27,6 @@ export const getApiKeysController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-GET SINGLE API KEY
-=========================
-*/
 
 export const getSingleApiKeyController = async (req, res, next) => {
   try {
@@ -52,11 +42,6 @@ export const getSingleApiKeyController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-CREATE API KEY
-=========================
-*/
 
 export const createApiKeyController = async (req, res, next) => {
   try {
@@ -84,11 +69,6 @@ export const createApiKeyController = async (req, res, next) => {
   }
 };
 
-/*
-=========================
-DELETE API KEY
-=========================
-*/
 
 export const deleteApiKeyController = async (req, res, next) => {
   try {

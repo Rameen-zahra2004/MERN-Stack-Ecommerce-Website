@@ -11,7 +11,6 @@ export const fetchAdminProducts = createAsyncThunk(
     if (!res.ok) throw new Error("Failed to fetch");
     const data = await res.json();
 
-    // DummyJSON returns { products: [...] }
     return data.products.map((item) => ({
       id: item.id,
       title: item.title,
@@ -32,7 +31,6 @@ const adminProductsSlice = createSlice({
     error: null,
   },
   reducers: {
-    // Add product locally (id uses Date.now())
     addProduct: (state, action) => {
       const newProduct = { ...action.payload, id: Date.now() };
       state.items.unshift(newProduct);

@@ -1,11 +1,6 @@
 import redisClient from "./redis.js";
 import logger from "./logger.js";
 
-/*
-=========================
-SET CACHE
-=========================
-*/
 
 export const setCache = async (
   key,
@@ -28,11 +23,6 @@ export const setCache = async (
   }
 };
 
-/*
-=========================
-GET CACHE
-=========================
-*/
 
 export const getCache = async (
   key
@@ -64,11 +54,6 @@ export const getCache = async (
   }
 };
 
-/*
-=========================
-DELETE CACHE
-=========================
-*/
 
 export const deleteCache = async (
   key
@@ -85,11 +70,6 @@ export const deleteCache = async (
   }
 };
 
-/*
-=========================
-DELETE MULTIPLE CACHE KEYS (PATTERN BASED)
-=========================
-*/
 
 export const deleteCacheByPattern =
   async (pattern) => {

@@ -4,11 +4,6 @@ import { hashPassword } from "./user.utils.js";
 
 import { USER_MESSAGES } from "./user.constants.js";
 
-/*
-=========================
-CREATE USER
-=========================
-*/
 
 export const createUserService = async (payload) => {
   const hashed = await hashPassword(payload.password);
@@ -21,11 +16,6 @@ export const createUserService = async (payload) => {
   return user;
 };
 
-/*
-=========================
-GET USER BY ID
-=========================
-*/
 
 export const getUserByIdService = async (id) => {
   const user = await User.findById(id);
@@ -37,11 +27,6 @@ export const getUserByIdService = async (id) => {
   return user;
 };
 
-/*
-=========================
-GET ALL USERS (ADMIN)
-=========================
-*/
 
 export const getUsersService = async (query) => {
   const { page = 1, limit = 10, role } = query;
@@ -58,11 +43,6 @@ export const getUsersService = async (query) => {
   return users;
 };
 
-/*
-=========================
-UPDATE USER
-=========================
-*/
 
 export const updateUserService = async (id, payload) => {
   const user = await User.findByIdAndUpdate(id, payload, { new: true });
@@ -74,11 +54,6 @@ export const updateUserService = async (id, payload) => {
   return user;
 };
 
-/*
-=========================
-DELETE USER (SOFT)
-=========================
-*/
 
 export const deleteUserService = async (id) => {
   const user = await User.findByIdAndUpdate(

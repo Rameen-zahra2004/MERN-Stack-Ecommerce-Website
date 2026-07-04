@@ -7,20 +7,10 @@ class ApiError extends Error {
   ) {
     super(message);
 
-    /*
-    =========================
-    BASIC ERROR INFO
-    =========================
-    */
     this.statusCode = statusCode;
     this.message = message;
     this.isOperational = isOperational;
 
-    /*
-    =========================
-    STACK TRACE HANDLING
-    =========================
-    */
     if (stack) {
       this.stack = stack;
     } else {
@@ -31,11 +21,6 @@ class ApiError extends Error {
     }
   }
 
-  /*
-  =========================
-  JSON SAFE OUTPUT
-  =========================
-  */
   toJSON() {
     return {
       statusCode: this.statusCode,

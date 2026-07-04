@@ -10,19 +10,9 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-PUBLIC READ (SAFE SETTINGS)
-=========================
-*/
 
 router.get("/", getSystemSettingController);
 
-/*
-=========================
-ADMIN UPDATE
-=========================
-*/
 
 router.put(
   "/",

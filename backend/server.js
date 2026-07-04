@@ -5,11 +5,6 @@ import app from "./app.js";
 import connectDB from "./config/db.js";
 import mongoose from "mongoose";
 
-/*
-=========================
-PROCESS SAFETY
-=========================
-*/
 
 process.on("uncaughtException", (error) => {
   console.error("🔥 UNCAUGHT EXCEPTION");
@@ -23,11 +18,6 @@ process.on("unhandledRejection", (reason) => {
   process.exit(1);
 });
 
-/*
-=========================
-START SERVER
-=========================
-*/
 
 const startServer = async () => {
   try {
@@ -49,11 +39,6 @@ Database    : Connected
       `);
     });
 
-    /*
-    =========================
-    GRACEFUL SHUTDOWN
-    =========================
-    */
 
     let isShuttingDown = false;
 

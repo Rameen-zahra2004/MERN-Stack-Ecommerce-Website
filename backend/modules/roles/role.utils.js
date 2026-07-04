@@ -2,11 +2,6 @@ import {
   ROLE_HIERARCHY,
 } from "./role.constants.js";
 
-/*
-=========================
-CHECK HIERARCHY ACCESS
-=========================
-*/
 
 export const hasPermission =
   (userRole, requiredRole) => {

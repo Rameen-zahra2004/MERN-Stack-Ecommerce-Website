@@ -1,94 +1,3 @@
-// import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-// import publicApi from "../../publicApi";
-
-// export const fetchProducts = createAsyncThunk(
-//   "products/fetch",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const res = await publicApi.get("/products");
-//       return res.data.data; // backend wraps array in { data: [...] }
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data?.message || err.message);
-//     }
-//   },
-// );
-
-// export const fetchProductById = createAsyncThunk(
-//   "products/fetchById",
-//   async (id, { rejectWithValue }) => {
-//     try {
-//       const res = await publicApi.get(`/products/${id}`);
-//       return res.data.data;
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data?.message || err.message);
-//     }
-//   },
-// );
-
-// const IMAGE_BASE_URL =
-//   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-
-// // turns relative "/uploads/xyz.jpg" into a full browser-loadable URL
-// const normalizeProduct = (p) => {
-//   if (!p) return p;
-
-//   const primaryImage = p.images?.find((img) => img.isPrimary) || p.images?.[0];
-
-//   return {
-//     ...p,
-//     image: primaryImage ? `${IMAGE_BASE_URL}${primaryImage.url}` : null,
-//     images: (p.images ?? []).map((img) => ({
-//       ...img,
-//       url: `${IMAGE_BASE_URL}${img.url}`,
-//     })),
-//   };
-// };
-
-// const productSlice = createSlice({
-//   name: "products",
-//   initialState: {
-//     items: [],
-//     selectedProduct: null,
-//     loading: false,
-//     error: null,
-//   },
-//   reducers: {
-//     clearSelectedProduct: (state) => {
-//       state.selectedProduct = null;
-//     },
-//   },
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchProducts.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchProducts.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.items = action.payload.map(normalizeProduct);
-//       })
-//       .addCase(fetchProducts.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload;
-//       })
-
-//       .addCase(fetchProductById.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchProductById.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.selectedProduct = normalizeProduct(action.payload);
-//       })
-//       .addCase(fetchProductById.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload;
-//       });
-//   },
-// });
-
-// export const { clearSelectedProduct } = productSlice.actions;
-// export default productSlice.reducer;
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import publicApi from "../../publicApi";
 import api from "../api"; // <-- your authenticated axios instance (with JWT interceptor) for admin actions
@@ -120,7 +29,6 @@ const extractErrorMessage = (err) =>
   err.response?.data?.message || err.message || "Something went wrong";
 
 /* ------------------------------------------------------------------ */
-/* Thunks — Read (public)                                             */
 /* ------------------------------------------------------------------ */
 export const selectPagination = (state) => state.products.pagination;
 export const fetchProducts = createAsyncThunk(
@@ -148,7 +56,6 @@ export const fetchProductById = createAsyncThunk(
 );
 
 /* ------------------------------------------------------------------ */
-/* Thunks — Write (admin / authenticated)                              */
 /* ------------------------------------------------------------------ */
 
 export const createProduct = createAsyncThunk(

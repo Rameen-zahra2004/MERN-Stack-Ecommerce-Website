@@ -13,9 +13,6 @@ export const paymentApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    // ========================
-    // STRIPE ENDPOINTS
-    // ========================
 
     stripeCreateIntent: builder.mutation({
       query: (body) => ({
@@ -41,9 +38,6 @@ export const paymentApi = createApi({
       }),
     }),
 
-    // ========================
-    // PAYPAL ENDPOINTS
-    // ========================
 
     paypalCreateOrder: builder.mutation({
       query: (body) => ({

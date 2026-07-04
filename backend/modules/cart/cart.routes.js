@@ -11,11 +11,6 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-CART ROUTES
-=========================
-*/
 
 router.use(protect);
 

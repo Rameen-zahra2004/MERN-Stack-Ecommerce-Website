@@ -14,7 +14,6 @@ const PaypalPayment = ({ amount, orderId, onSuccess, onError }) => {
   const [createOrder] = usePaypalCreateOrderMutation();
   const [captureOrder] = usePaypalCaptureOrderMutation();
 
-  // Reset error state if amount/orderId changes (e.g. cart updated mid-checkout)
   useEffect(() => {
     setPaypalError("");
   }, [amount, orderId]);

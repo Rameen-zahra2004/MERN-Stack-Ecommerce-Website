@@ -21,11 +21,6 @@ const activeUserSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-INDEXES
-=========================
-*/
 
 activeUserSchema.index({ recordedAt: -1 });
 

@@ -7,11 +7,6 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-ACTIVE USER ROUTES
-=========================
-*/
 
 router.get(
   "/",

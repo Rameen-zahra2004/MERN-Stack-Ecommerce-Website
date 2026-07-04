@@ -79,21 +79,9 @@ const adminSchema = new mongoose.Schema(
   },
 );
 
-/*
-=========================
-INDEXES
-email: already indexed via `unique: true` above — declaring it again here
-would create a second, redundant index on the same field.
-=========================
-*/
 adminSchema.index({ role: 1 });
 adminSchema.index({ isActive: 1 });
 
-/*
-=========================
-HASH PASSWORD
-=========================
-*/
 adminSchema.pre("save", async function () {
   if (!this.isModified("password")) {
     return;
@@ -101,20 +89,10 @@ adminSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 12);
 });
 
-/*
-=========================
-COMPARE PASSWORD
-=========================
-*/
 adminSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-/*
-=========================
-REMOVE SENSITIVE FIELDS
-=========================
-*/
 adminSchema.methods.toJSON = function () {
   const admin = this.toObject();
   delete admin.password;

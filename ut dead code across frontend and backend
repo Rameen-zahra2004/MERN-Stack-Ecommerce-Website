@@ -1,0 +1,184 @@
+warning: in the working copy of 'src/Slices/signinSlice.js', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/Slices/signinSlice.js b/src/Slices/signinSlice.js[m
+[1mindex a6e3245..dde5a9b 100644[m
+[1m--- a/src/Slices/signinSlice.js[m
+[1m+++ b/src/Slices/signinSlice.js[m
+[36m@@ -1,183 +1,3 @@[m
+[31m-// import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";[m
+[31m-// import api from "../api";[m
+[31m-[m
+[31m-// // ─── LOGIN (Backend API) ──────────────────────────────────[m
+[31m-// export const loginUser = createAsyncThunk([m
+[31m-//   "signinuser/loginUser",[m
+[31m-//   async ({ email, password }, { rejectWithValue }) => {[m
+[31m-//     try {[m
+[31m-//       const response = await api.post("/auth/login", { email, password });[m
+[31m-//       return response.data.data;[m
+[31m-//     } catch (error) {[m
+[31m-//       return rejectWithValue([m
+[31m-//         error.response?.data?.message ||[m
+[31m-//         error.response?.data?.errors?.[0] ||[m
+[31m-//         "Invalid email or password"[m
+[31m-//       );[m
+[31m-//     }[m
+[31m-//   }[m
+[31m-// );[m
+[31m-[m
+[31m-// // ─── SIGNUP (Backend API) ─────────────────────────────────[m
+[31m-// export const SignupUser = createAsyncThunk([m
+[31m-//   "signinuser/SignupUser",[m
+[31m-//   async ({ name, email, password }, { rejectWithValue }) => {[m
+[31m-//     try {[m
+[31m-//       const response = await api.post("/auth/register", { name, email, password });[m
+[31m-//       return response.data.data;[m
+[31m-//     } catch (error) {[m
+[31m-//       return rejectWithValue([m
+[31m-//         error.response?.data?.message ||[m
+[31m-//         error.response?.data?.errors?.[0] ||[m
+[31m-//         "Signup failed"[m
+[31m-//       );[m
+[31m-//     }[m
+[31m-//   }[m
+[31m-// );[m
+[31m-[m
+[31m-// // ─── LOGOUT (Backend API) ─────────────────────────────────[m
+[31m-// export const logoutUser = createAsyncThunk([m
+[31m-//   "signinuser/logoutUser",[m
+[31m-//   async (_, { rejectWithValue }) => {[m
+[31m-//     try {[m
+[31m-//       await api.post("/auth/logout");[m
+[31m-//       return true;[m
+[31m-//     } catch (error) {[m
+[31m-//       return rejectWithValue([m
+[31m-//         error.response?.data?.message || "Logout failed"[m
+[31m-//       );[m
+[31m-//     }[m
+[31m-//   }[m
+[31m-// );[m
+[31m-[m
+[31m-// // ─── RESET PASSWORD ───────────────────────────────────────[m
+[31m-// export const resetPassword = createAsyncThunk([m
+[31m-//   "signinuser/resetPassword",[m
+[31m-//   async ({ email, newPassword }, { rejectWithValue }) => {[m
+[31m-//     try {[m
+[31m-//       const users = JSON.parse(localStorage.getItem("users") || "[]");[m
+[31m-//       const index = users.findIndex((u) => u.email === email);[m
+[31m-//       if (index === -1) return rejectWithValue("Email not found");[m
+[31m-//       users[index].password = newPassword;[m
+[31m-//       localStorage.setItem("users", JSON.stringify(users));[m
+[31m-//       const current = JSON.parse(localStorage.getItem("currentUser") || "null");[m
+[31m-//       if (current?.email === email) {[m
+[31m-//         localStorage.setItem("currentUser", JSON.stringify({ ...current, password: newPassword }));[m
+[31m-//       }[m
+[31m-//       return { message: "Password reset successful" };[m
+[31m-//     } catch {[m
+[31m-//       return rejectWithValue("Reset password failed");[m
+[31m-//     }[m
+[31m-//   }[m
+[31m-// );[m
+[31m-[m
+[31m-// // ─── DELETE USER ──────────────────────────────────────────[m
+[31m-// export const deleteUser = createAsyncThunk([m
+[31m-//   "signinuser/deleteUser",[m
+[31m-//   async (id, { rejectWithValue }) => {[m
+[31m-//     try {[m
+[31m-//       const users = JSON.parse(localStorage.getItem("users") || "[]").filter([m
+[31m-//         (u) => u.id !== id[m
+[31m-//       );[m
+[31m-//       localStorage.setItem("users", JSON.stringify(users));[m
+[31m-//       const current = JSON.parse(localStorage.getItem("currentUser") || "null");[m
+[31m-//       if (current?.id === id) {[m
+[31m-//         localStorage.removeItem("currentUser");[m
+[31m-//       }[m
+[31m-//       return id;[m
+[31m-//     } catch {[m
+[31m-//       return rejectWithValue("Delete user failed");[m
+[31m-//     }[m
+[31m-//   }[m
+[31m-// );[m
+[31m-[m
+[31m-// // ─── Slice ────────────────────────────────────────────────[m
+[31m-// const signinSlice = createSlice({[m
+[31m-//   name: "signinuser",[m
+[31m-//   initialState: {[m
+[31m-//     user: null,[m
+[31m-//     loading: false,[m
+[31m-//     error: null,[m
+[31m-//     resetLoading: false,[m
+[31m-//     resetSuccess: null,[m
+[31m-//     resetError: null,[m
+[31m-//   },[m
+[31m-[m
+[31m-//   reducers: {[m
+[31m-//     logOut: (state) => {[m
+[31m-//       state.user = null;[m
+[31m-//       state.error = null;[m
+[31m-//       localStorage.removeItem("currentUser");[m
+[31m-//       localStorage.removeItem("token");[m
+[31m-//     },[m
+[31m-//     clearResetState: (state) => {[m
+[31m-//       state.resetLoading = false;[m
+[31m-//       state.resetSuccess = null;[m
+[31m-//       state.resetError = null;[m
+[31m-//     },[m
+[31m-//     clearError: (state) => {[m
+[31m-//       state.error = null;[m
+[31m-//     },[m
+[31m-//   },[m
+[31m-[m
+[31m-//   extraReducers: (builder) => {[m
+[31m-//     builder[m
+[31m-//       .addCase(loginUser.pending, (state) => {[m
+[31m-//         state.loading = true;[m
+[31m-//         state.error = null;[m
+[31m-//       })[m
+[31m-//       .addCase(loginUser.fulfilled, (state, action) => {[m
+[31m-//         state.loading = false;[m
+[31m-//         state.user = action.payload;[m
+[31m-//       })[m
+[31m-//       .addCase(loginUser.rejected, (state, action) => {[m
+[31m-//         state.loading = false;[m
+[31m-//         state.error = action.payload;[m
+[31m-//       })[m
+[31m-[m
+[31m-//       .addCase(SignupUser.pending, (state) => {[m
+[31m-//         state.loading = true;[m
+[31m-//         state.error = null;[m
+[31m-//       })[m
+[31m-//       .addCase(SignupUser.fulfilled, (state, action) => {[m
+[31m-//         state.loading = false;[m
+[31m-//         state.user = action.payload;[m
+[31m-//       })[m
+[31m-//       .addCase(SignupUser.rejected, (state, action) => {[m
+[31m-//         state.loading = false;[m
+[31m-//         state.error = action.payload;[m
+[31m-//       })[m
+[31m-[m
+[31m-//       .addCase(logoutUser.fulfilled, (state) => {[m
+[31m-//         state.user = null;[m
+[31m-//         state.error = null;[m
+[31m-//       })[m
+[31m-[m
+[31m-//       .addCase(resetPassword.pending, (state) => {[m
+[31m-//         state.resetLoading = true;[m
+[31m-//         state.resetError = null;[m
+[31m-//         state.resetSuccess = null;[m
+[31m-//       })[m
+[31m-//       .addCase(resetPassword.fulfilled, (state, action) => {[m
+[31m-//         state.resetLoading = false;[m
+[31m-//         state.resetSuccess = action.payload?.message || "Password reset successful";[m
+[31m-//       })[m
+[31m-//       .addCase(resetPassword.rejected, (state, action) => {[m
+[31m-//         state.resetLoading = false;[m
+[31m-//         state.resetError = action.payload;[m
+[31m-//       })[m
+[31m-[m
+[31m-//       .addCase(deleteUser.fulfilled, (state, action) => {[m
+[31m-//         if (state.user?.id === action.payload) {[m
+[31m-//           state.user = null;[m
+[31m-//           localStorage.removeItem("currentUser");[m
+[31m-//         }[m
+[31m-//       });[m
+[31m-//   },[m
+[31m-// });[m
+[31

@@ -25,11 +25,6 @@ export const createOrderDetailService = async (
   return await OrderDetail.insertMany(payload, options);
 };
 
-/*
-=========================
-GET BY ORDER ID
-=========================
-*/
 
 export const getOrderDetailByOrderService = async (orderId) => {
   const data = await OrderDetail.find({
@@ -41,11 +36,6 @@ export const getOrderDetailByOrderService = async (orderId) => {
   return data;
 };
 
-/*
-=========================
-GET USER ORDER ITEMS (ANALYTICS READY)
-=========================
-*/
 
 export const getUserOrderDetailsService = async (userId) => {
   const data = await OrderDetail.find({

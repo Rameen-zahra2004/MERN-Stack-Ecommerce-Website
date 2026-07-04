@@ -6,7 +6,6 @@ export default function Sidebar({ open, setOpen }) {
 
   const items = [
     { to: "/", label: "Home", icon: <FiHome /> },
-    // { to: "/", label: "Products", icon: <FiShoppingBag /> },
     { to: "/user", label: "User", icon: <FiUsers /> },
   ];
 

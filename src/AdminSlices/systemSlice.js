@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api"; // ✅ FIXED: use api instead of raw axios
 
-/* =========================
-   FETCH SYSTEM SETTINGS
-========================= */
 export const fetchSystem = createAsyncThunk(
   "system/fetchSystem",
   async (_, { rejectWithValue }) => {
@@ -16,9 +13,6 @@ export const fetchSystem = createAsyncThunk(
   }
 );
 
-/* =========================
-   UPDATE SYSTEM SETTINGS
-========================= */
 export const updateSystem = createAsyncThunk(
   "system/updateSystem",
   async (data, { rejectWithValue }) => {
@@ -31,9 +25,6 @@ export const updateSystem = createAsyncThunk(
   }
 );
 
-/* =========================
-   CREATE API KEY
-========================= */
 export const createApiKey = createAsyncThunk(
   "system/createApiKey",
   async (name, { rejectWithValue }) => {
@@ -52,9 +43,6 @@ export const createApiKey = createAsyncThunk(
   }
 );
 
-/* =========================
-   REVOKE API KEY
-========================= */
 export const revokeApiKey = createAsyncThunk(
   "system/revokeApiKey",
   async (id, { rejectWithValue }) => {
@@ -67,9 +55,6 @@ export const revokeApiKey = createAsyncThunk(
   }
 );
 
-/* =========================
-   SLICE
-========================= */
 const systemSlice = createSlice({
   name: "system",
   initialState: {

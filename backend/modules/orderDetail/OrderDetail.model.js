@@ -71,11 +71,6 @@ const orderDetailSchema = new mongoose.Schema(
   }
 );
 
-/*
-=========================
-INDEXES (PERFORMANCE CRITICAL)
-=========================
-*/
 
 orderDetailSchema.index({ order: 1 });
 orderDetailSchema.index({ user: 1 });

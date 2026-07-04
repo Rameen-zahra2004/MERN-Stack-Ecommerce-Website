@@ -131,7 +131,6 @@ export default function DashboardHome({ sidebarOpen }) {
     return error.summary || error.sales || error.revenue || null;
   }, [error]);
 
-  // 🎨 THEMED CARDS ONLY (no logic change)
   const cards = useMemo(
     () => [
       {
@@ -160,8 +159,6 @@ export default function DashboardHome({ sidebarOpen }) {
         adminOnly: true,
         trend: revenueTrend,
         loading: loading?.revenue,
-        // NOTE: no growth % here — backend's /dashboard/revenue doesn't return
-        // one currently. Add it to getRevenueAnalyticsService if you want this.
       },
       {
         title: "Products",

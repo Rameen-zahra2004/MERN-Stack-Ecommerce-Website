@@ -128,7 +128,6 @@ export const deleteAdminController = async (req, res, next) => {
   }
 };
 
-/* ===================== LOGIN ===================== */
 
 export const loginAdminController = async (req, res, next) => {
   try {
@@ -156,7 +155,6 @@ export const loginAdminController = async (req, res, next) => {
   }
 };
 
-/* ===================== LOGOUT ===================== */
 
 export const logoutAdminController = async (req, res, next) => {
   try {
@@ -170,7 +168,6 @@ export const logoutAdminController = async (req, res, next) => {
   }
 };
 
-/* ===================== REFRESH ===================== */
 
 export const refreshAdminController = async (req, res, next) => {
   try {
@@ -187,7 +184,6 @@ export const refreshAdminController = async (req, res, next) => {
   }
 };
 
-/* ===================== GET ME (session rehydration) ===================== */
 
 export const getMeController = async (req, res, next) => {
   try {

@@ -10,11 +10,6 @@ import {
 
 const router = express.Router();
 
-/*
-=========================
-API KEY ROUTES
-=========================
-*/
 
 // FIX (C10/C11): require admin auth for all API key management
 router.use(protect, restrictTo("admin"));

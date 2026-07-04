@@ -1,11 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-/*
-==================================================
-FETCH USERS COUNT
-==================================================
-*/
 export const fetchUsers = createAsyncThunk(
   "dashboard/fetchUsers",
   async (_, { rejectWithValue }) => {
@@ -18,11 +13,6 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-FETCH ORDERS COUNT
-==================================================
-*/
 export const fetchOrders = createAsyncThunk(
   "dashboard/fetchOrders",
   async (_, { rejectWithValue }) => {
@@ -35,11 +25,6 @@ export const fetchOrders = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-FETCH REVENUE (WITH PERIOD FILTER)
-==================================================
-*/
 export const fetchRevenue = createAsyncThunk(
   "dashboard/fetchRevenue",
   async (period = "month", { rejectWithValue }) => {
@@ -94,11 +79,6 @@ export const fetchRevenue = createAsyncThunk(
   }
 );
 
-/*
-==================================================
-SLICE
-==================================================
-*/
 const dashboardSlice = createSlice({
   name: "dashboard",
 
@@ -167,10 +147,5 @@ const dashboardSlice = createSlice({
   },
 });
 
-/*
-==================================================
-EXPORTS
-==================================================
-*/
 export const { setPeriod } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

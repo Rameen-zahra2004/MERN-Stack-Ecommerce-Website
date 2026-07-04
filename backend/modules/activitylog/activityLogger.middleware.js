@@ -8,11 +8,6 @@ const REDACT_FIELDS = [
   "refreshToken",
 ];
 
-/*
-=========================
-AUTO ACTIVITY LOGGER
-=========================
-*/
 
 const activityLogger = (moduleName, actionName) => async (req, res, next) => {
   const originalSend = res.send;

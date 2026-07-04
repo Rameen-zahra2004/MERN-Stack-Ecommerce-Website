@@ -7,11 +7,6 @@ import {
   SYSTEM_SETTING_MESSAGES,
 } from "./systemSetting.constants.js";
 
-/*
-=========================
-GET SETTINGS
-=========================
-*/
 
 export const getSystemSettingController =
   async (req, res, next) => {
@@ -30,11 +25,6 @@ export const getSystemSettingController =
     }
   };
 
-/*
-=========================
-UPDATE SETTINGS (ADMIN ONLY)
-=========================
-*/
 
 export const updateSystemSettingController =
   async (req, res, next) => {

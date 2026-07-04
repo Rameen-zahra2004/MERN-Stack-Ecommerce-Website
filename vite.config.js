@@ -1,35 +1,3 @@
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react";
-// import tailwindcss from "@tailwindcss/vite";
-
-// export default defineConfig({
-//   plugins: [react(), tailwindcss()],
-//   build: {
-//     chunkSizeWarningLimit: 600,
-//     rollupOptions: {
-//       output: {
-//         manualChunks: {
-//           react: ["react", "react-dom", "react-router-dom"],
-//           redux: ["@reduxjs/toolkit", "react-redux"],
-//           icons: ["react-icons"],
-//           axios: ["axios"],
-//           recharts: ["recharts"],
-//           d3: [
-//             "d3-color",
-//             "d3-format",
-//             "d3-interpolate",
-//             "d3-scale",
-//             "d3-shape",
-//             "d3-time",
-//             "d3-time-format",
-//             "d3-path",
-//           ],
-//           decimal: ["decimal.js-light"],
-//         },
-//       },
-//     },
-//   },
-// });
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
