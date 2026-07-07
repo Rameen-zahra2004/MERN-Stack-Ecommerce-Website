@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-import Admin from "./Admin.model.js";
->>>>>>> origin/main
-
 import Admin from "./Admin.model.js";
 import { ADMIN_MESSAGES } from "./admin.constants.js";
 import {
@@ -16,7 +11,6 @@ import {
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-
 
 export const getAdminsService = async ({ page = 1, limit = 20 }) => {
   const skip = (page - 1) * limit;
@@ -35,7 +29,6 @@ export const getAdminsService = async ({ page = 1, limit = 20 }) => {
   };
 };
 
-
 export const getSingleAdminService = async (id) => {
   const admin = await Admin.findById(id).lean();
   if (!admin) {
@@ -45,7 +38,6 @@ export const getSingleAdminService = async (id) => {
   }
   return admin;
 };
-
 
 export const createAdminService = async (payload) => {
   const existingAdmin = await Admin.findOne({ email: payload.email });
@@ -58,7 +50,6 @@ export const createAdminService = async (payload) => {
   const admin = await Admin.create(payload);
   return admin;
 };
-
 
 export const updateAdminService = async (id, payload) => {
   const admin = await Admin.findByIdAndUpdate(id, payload, {
@@ -75,7 +66,6 @@ export const updateAdminService = async (id, payload) => {
   return admin;
 };
 
-
 export const deleteAdminService = async (id) => {
   const admin = await Admin.findByIdAndDelete(id);
   if (!admin) {
@@ -85,7 +75,6 @@ export const deleteAdminService = async (id) => {
   }
   return admin;
 };
-
 
 export const loginAdminService = async (res, { email, password }) => {
   const admin = await Admin.findOne({ email }).select(
@@ -161,7 +150,6 @@ export const loginAdminService = async (res, { email, password }) => {
   };
 };
 
-
 export const logoutAdminService = async (res, adminId) => {
   if (adminId) {
     await Admin.findByIdAndUpdate(adminId, { $unset: { refreshToken: "" } });
@@ -171,7 +159,6 @@ export const logoutAdminService = async (res, adminId) => {
     refreshCookieName: "adminRefreshToken",
   });
 };
-
 
 /**
  * refreshAdminTokenService
@@ -266,7 +253,6 @@ export const refreshAdminTokenService = async (res, incomingRefreshToken) => {
     refreshCookieName: "adminRefreshToken",
   });
 
-<<<<<<< HEAD
   return {
     id: admin._id,
     name: admin.name,
@@ -275,7 +261,6 @@ export const refreshAdminTokenService = async (res, incomingRefreshToken) => {
     permissions: admin.permissions,
   };
 };
-
 
 export const seedFirstSuperAdmin = async ({ name, email, password }) => {
   const existingCount = await Admin.countDocuments();
@@ -298,7 +283,3 @@ export const seedFirstSuperAdmin = async ({ name, email, password }) => {
 
   return { id: admin._id, email: admin.email, role: admin.role };
 };
-=======
-    return admin;
-  };
->>>>>>> origin/main
